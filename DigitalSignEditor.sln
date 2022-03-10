@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalSignEditor", "DigitalSignEditor\DigitalSignEditor.csproj", "{6A24AC9C-22ED-4F64-A166-A96D2DF1E8FF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2360C2A8-71B0-42AA-B44B-3A4F6CC2909F}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		CODEOWNERS = CODEOWNERS
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalSignEditorUnitTest", "DigitalSignEditorUnitTest\DigitalSignEditorUnitTest.csproj", "{C461B875-7FAF-476C-A7CB-EFC9E134C651}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6A24AC9C-22ED-4F64-A166-A96D2DF1E8FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A24AC9C-22ED-4F64-A166-A96D2DF1E8FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A24AC9C-22ED-4F64-A166-A96D2DF1E8FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A24AC9C-22ED-4F64-A166-A96D2DF1E8FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C461B875-7FAF-476C-A7CB-EFC9E134C651}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C461B875-7FAF-476C-A7CB-EFC9E134C651}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C461B875-7FAF-476C-A7CB-EFC9E134C651}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C461B875-7FAF-476C-A7CB-EFC9E134C651}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D33E972D-8955-4293-93F5-FEE296CC878C}
+	EndGlobalSection
+EndGlobal

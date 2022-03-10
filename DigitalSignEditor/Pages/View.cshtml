@@ -1,0 +1,35 @@
+﻿@page
+@model DigitalSignEditor.Pages.ViewModel
+@{
+}
+
+<h1>Sign List</h1>
+<ul id="signs">
+
+</ul>
+
+@section Scripts
+{
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function (event) {
+        loadItems();
+    });
+
+    function loadItems() {
+        fetch('/Api/Sign/GetAll', {
+            method: 'GET',
+            headers: {
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+            }
+        }).then(res => res.json()).then(data => {
+            let signs = document.getElementById('signs');
+            signs.innerHTML = '';
+            data.items.forEach(element => {
+                const li = document.createElement('li');
+                li.innerHTML = `<p>${element.name} (${element.college})<br>${element.description}</p>`;
+                signs.appendChild(li);
+            });
+        });
+    }
+</script>
+}
