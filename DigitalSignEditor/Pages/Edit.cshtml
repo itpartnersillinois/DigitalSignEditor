@@ -26,12 +26,12 @@
             data.items.forEach(element => {
                 const li = document.createElement('li');
                 const a = document.createElement('a');
-                const p = document.createElement('p');
+                const div = document.createElement('div');
                 a.innerHTML = element.name;
                 a.setAttribute('href', '/editsingle?id=' + element.id);
-                p.innerHTML = `${element.college}<br>${element.description}</p>`
+                div.innerHTML = `${element.college} - ${element.description}`
                 li.appendChild(a);
-                li.appendChild(p);
+                li.appendChild(div);
                 signs.appendChild(li);
             });
         });

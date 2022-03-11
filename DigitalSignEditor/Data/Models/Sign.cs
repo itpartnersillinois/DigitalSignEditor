@@ -3,7 +3,7 @@
 namespace DigitalSignEditor.Data.Models {
 
     public class Sign : BaseObject {
-        public string College { get; set; }
+        public CollegeType College { get; set; }
         public string Data { get; set; }
         public string Description { get; set; }
         public int MinimumHeight { get; set; }
