@@ -1,6 +1,8 @@
 using DigitalSignEditor.Data;
 using DigitalSignEditor.Emergency;
 using DigitalSignEditor.Helpers;
+using DigitalSignEditor.Twitter;
+using DigitalSignEditor.Weather;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Authorization;
@@ -67,6 +69,13 @@ namespace DigitalSignEditor {
             services.AddScoped(sp => new SecurityHelper(sp.GetRequiredService<ISignRepository>(), Configuration.GetValue<string>("AdminList")));
 
             services.AddSingleton(access => new EmergencyContainer(EmergencyChecker.Check));
+
+            services.AddSingleton(access => new WeatherHelper());
+
+            services.AddSingleton(access => new TwitterHelper(Configuration.GetValue<string>("Twitter:ConsumerKey"),
+                Configuration.GetValue<string>("Twitter:ConsumerSecret"),
+                Configuration.GetValue<string>("Twitter:OAuthToken"),
+                Configuration.GetValue<string>("Twitter:OAuthTokenSecret")));
         }
     }
 }
