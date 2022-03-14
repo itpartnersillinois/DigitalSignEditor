@@ -14,6 +14,7 @@ namespace DigitalSignEditor.ApiModel {
             Name = sign.Name;
             Description = sign.Description;
             Id = sign.Id;
+            Url = sign.Url;
             College = sign.College.ToString().ConvertEnum();
             MinimumWidth = sign.MinimumWidth + "px";
             MinimumHeight = sign.MinimumHeight + "px";

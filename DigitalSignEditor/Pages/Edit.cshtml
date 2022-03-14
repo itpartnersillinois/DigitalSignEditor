@@ -2,11 +2,21 @@
 @model DigitalSignEditor.Pages.EditModel
 @{
 }
-<h1>Sign List</h1>
-<ul id="signs">
-
-</ul>
-
+<h1>Edit Signs</h1>
+<div class="box">
+<div class="two-column">
+    <div class="column">
+        <h2>Sign List</h2>
+        <ul id="signs">
+        </ul>
+    </div>
+    <div class="column">
+        <h2>Transfer Changes</h2>
+        <p>The digital sign processor pulls changes daily.<br /> You can trigger this manually using the button below.</p>
+        <p><button class="il-button il-theme-orange" id="save" onclick="return save();">Transfer Changes</button></p>
+    </div>
+</div>
+</div>
 @section Scripts
 {
 <script type="text/javascript">
@@ -36,5 +46,10 @@
             });
         });
     }
+
+    function save() {
+        alert('at this point, we would transfer files -- this is not implemented yet');
+    }
+
 </script>
 }

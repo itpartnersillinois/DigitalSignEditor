@@ -45,12 +45,6 @@
     <button class="il-button" id="addCalendar" onclick="return calendar();">Add a Calendar Slide</button>
 </div>
 
-<hr />
-<div class="box">
-    <h2>Save Changes</h2>
-    <p>Once you completed all your changes, you can save your changes and it will be queued to the digital sign processor.</p>
-    <p><button class="il-button il-theme-orange" id="save" onclick="return save();">Save Changes</button></p>
-</div>
 @section Scripts
 {
 <script type="text/javascript">
@@ -68,7 +62,7 @@
             }
         }).then(res => res.json()).then(data => {
             document.getElementById('slideId').innerText = id;
-            document.getElementById('name').innerText = data.name;
+            document.getElementById('name').innerHTML = `<a href='${data.url}' target='_blank'>${data.name}</a>`;
             document.getElementById('college').innerText = data.college;
             document.getElementById('description').innerText = data.description;
             document.getElementById('twitter').innerText = data.twitter;
@@ -115,27 +109,23 @@
 
     function picture() {
         for (let i = 0; i < document.getElementById('image-upload').files.length; i++) {
-        var fd = new FormData();
-        var file_data = document.getElementById('image-upload').files[i];
-        fd.append('file', file_data);
-        fd.append('id', document.getElementById('slideId').innerText);
-        fetch('/Api/Image/Add', {
-            method: 'POST',
-            body: fd
-        }).then(function (response) {
-            return response.text().then(function (text) {
-                if (text.startsWith("Error")) {
-                    document.getElementById('image-error').innerHTML = text;
-                } else {
-                    loadItems();
-                }
+            var fd = new FormData();
+            var file_data = document.getElementById('image-upload').files[i];
+            fd.append('file', file_data);
+            fd.append('id', document.getElementById('slideId').innerText);
+            fetch('/Api/Image/Add', {
+                method: 'POST',
+                body: fd
+            }).then(function (response) {
+                return response.text().then(function (text) {
+                    if (text.startsWith("Error")) {
+                        document.getElementById('image-error').innerHTML = text;
+                    } else {
+                        loadItems();
+                    }
+                });
             });
-        });
         }
-    }
-
-    function save() {
-        alert('at this point, we would save -- this is not implemented yet');
     }
     
     function edit(id) {

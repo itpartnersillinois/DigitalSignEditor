@@ -15,7 +15,8 @@ namespace DigitalSignEditor.ApiModel {
                 Name = s.Name,
                 Description = s.Description,
                 Id = s.Id,
-                College = s.College.ToString().ConvertEnum()
+                College = s.College.ToString().ConvertEnum(),
+                Url = s.Url
             }).ToList();
         }
 
