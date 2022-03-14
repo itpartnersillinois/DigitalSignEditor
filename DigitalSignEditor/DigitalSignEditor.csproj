@@ -23,6 +23,7 @@
   <ItemGroup>
     <Folder Include="GithubExport\" />
     <Folder Include="Migrations\" />
+    <Folder Include="Twitter\" />
     <Folder Include="Translator\" />
   </ItemGroup>
 

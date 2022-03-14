@@ -1,4 +1,5 @@
 using DigitalSignEditor.Data;
+using DigitalSignEditor.Emergency;
 using DigitalSignEditor.Helpers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
@@ -64,6 +65,8 @@ namespace DigitalSignEditor {
             services.AddScoped<ISignRepository, SignRepository>(sp => new SignRepository(sp.GetRequiredService<IDbContextFactory<SignContext>>()));
 
             services.AddScoped(sp => new SecurityHelper(sp.GetRequiredService<ISignRepository>(), Configuration.GetValue<string>("AdminList")));
+
+            services.AddSingleton(access => new EmergencyContainer(EmergencyChecker.Check));
         }
     }
 }
