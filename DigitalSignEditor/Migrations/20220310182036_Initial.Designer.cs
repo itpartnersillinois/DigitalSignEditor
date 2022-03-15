@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DigitalSignEditor.Migrations
 {
     [DbContext(typeof(SignContext))]
-    [Migration("20220310135624_Initial")]
+    [Migration("20220310182036_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,8 +28,8 @@ namespace DigitalSignEditor.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("College")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("College")
+                        .HasColumnType("int");
 
                     b.Property<string>("Data")
                         .HasColumnType("nvarchar(max)");
@@ -72,15 +72,16 @@ namespace DigitalSignEditor.Migrations
                         new
                         {
                             Id = -1,
-                            College = "College of Education",
+                            College = 0,
                             Description = "Sample sign used for testing",
                             IsActive = true,
-                            LastUpdated = new DateTime(2022, 3, 10, 7, 56, 24, 106, DateTimeKind.Local).AddTicks(9213),
+                            LastUpdated = new DateTime(2022, 3, 10, 12, 20, 36, 18, DateTimeKind.Local).AddTicks(6693),
                             MinimumHeight = 600,
                             MinimumWidth = 800,
                             Name = "Sample Sign",
                             RatioHeight = 9,
-                            RatioWidth = 16
+                            RatioWidth = 16,
+                            Url = "#"
                         });
                 });
 
@@ -109,8 +110,8 @@ namespace DigitalSignEditor.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Option")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Option")
+                        .HasColumnType("int");
 
                     b.Property<int>("Order")
                         .HasColumnType("int");

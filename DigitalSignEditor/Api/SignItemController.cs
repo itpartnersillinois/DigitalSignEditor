@@ -31,11 +31,9 @@ namespace DigitalSignEditor.Api {
             return await signRepository.CreateAsync(new SignItem {
                 IsActive = true,
                 LastUpdated = DateTime.Now,
+                SignId = signId,
                 Name = jsonObject.name,
                 Data = jsonObject.data,
-                Description = jsonObject.description,
-                EndDate = DateTime.Parse(jsonObject.endDate.ToString()),
-                StartDate = DateTime.Parse(jsonObject.startDate.ToString()),
                 Option = jsonObject.option,
                 Order = totalItems + 1
             });
@@ -43,18 +41,33 @@ namespace DigitalSignEditor.Api {
 
         [HttpPost("Move/{id}/{direction}")]
         public async Task<int> MoveSignItem(int id, string direction) {
-            var sign = await signRepository.ReadAsync(rep => rep.SignItems.FirstOrDefault(s => s.Id == id));
-            if (sign == null || !securityHelper.CanAccess(User, sign.SignId)) {
+            var signId = await signRepository.ReadAsync(rep => rep.SignItems.FirstOrDefault(s => s.Id == id)?.SignId);
+            if (signId == null || !securityHelper.CanAccess(User, signId.Value)) {
                 return default;
             }
-            var tempOrder = sign.Order;
-            var signSwap = direction == "up" ?
-                await signRepository.ReadAsync(rep => rep.SignItems.FirstOrDefault(s => s.SignId == sign.SignId && s.Order < tempOrder)) :
-                await signRepository.ReadAsync(rep => rep.SignItems.FirstOrDefault(s => s.SignId == sign.SignId && s.Order > tempOrder));
-            sign.Order = signSwap.Order;
-            signSwap.Order = tempOrder;
-            _ = await signRepository.UpdateAsync(sign);
-            _ = await signRepository.UpdateAsync(signSwap);
+            // need to reset order to ensure everything is in numerical order with no gaps
+            int tempOrder = default;
+            SignItem sign = default;
+            var allSigns = await signRepository.ReadAsync(rep => rep.SignItems.Where(s => s.SignId == signId.Value));
+            var allSignsList = allSigns.OrderBy(s => s.Order).ThenBy(s => s.Name).ToList();
+            for (int i = 0; i < allSignsList.Count(); i++) {
+                allSignsList[i].Order = i + 1;
+                if (allSignsList[i].Id == id) {
+                    tempOrder = allSignsList[i].Order;
+                    sign = allSignsList[i];
+                }
+            }
+            var signSwap = direction.Equals("up", StringComparison.OrdinalIgnoreCase) ?
+                allSignsList.OrderByDescending(s => s.Order).FirstOrDefault(s => s.Order < tempOrder) :
+                allSignsList.OrderBy(s => s.Order).FirstOrDefault(s => s.Order > tempOrder);
+            if (signSwap != null) {
+                sign.Order = signSwap.Order;
+                signSwap.Order = tempOrder;
+            }
+            foreach (var signInList in allSignsList) {
+                _ = await signRepository.UpdateAsync(signInList);
+            }
+
             return 1;
         }
 
@@ -64,7 +77,15 @@ namespace DigitalSignEditor.Api {
             if (sign == null || !securityHelper.CanAccess(User, sign.SignId)) {
                 return default;
             }
-            return await signRepository.DeleteAsync(sign);
+            var order = sign.Order;
+            var signId = sign.SignId;
+            await signRepository.DeleteAsync(sign);
+            var signsAfter = await signRepository.ReadAsync(rep => rep.SignItems.Where(s => s.SignId == signId && s.Order > order));
+            foreach (var signAfter in signsAfter) {
+                signAfter.Order = signAfter.Order - 1;
+                await signRepository.UpdateAsync(signAfter);
+            }
+            return 1;
         }
 
         [HttpPost("Update")]
@@ -77,11 +98,9 @@ namespace DigitalSignEditor.Api {
             }
             sign.LastUpdated = DateTime.Now;
             sign.Name = jsonObject.name;
-            sign.Data = jsonObject.data;
             sign.Description = jsonObject.description;
-            sign.EndDate = DateTime.Parse(jsonObject.endDate.ToString());
-            sign.StartDate = DateTime.Parse(jsonObject.startDate.ToString());
-            sign.Option = jsonObject.option;
+            sign.EndDate = TextHelper.ConvertDate(jsonObject.endDate.ToString());
+            sign.StartDate = TextHelper.ConvertDate(jsonObject.startDate.ToString());
             return await signRepository.UpdateAsync(sign);
         }
     }
