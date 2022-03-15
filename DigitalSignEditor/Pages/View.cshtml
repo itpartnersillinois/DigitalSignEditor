@@ -26,7 +26,7 @@
             signs.innerHTML = '';
             data.items.forEach(element => {
                 const li = document.createElement('li');
-                li.innerHTML = `<p>${element.name} (${element.college})<br>${element.description}</p>`;
+                li.innerHTML = `<p><a href='${element.url}' target='_blank'>${element.name}</a> (${element.college})<br>${element.description}</p>`;
                 signs.appendChild(li);
             });
         });

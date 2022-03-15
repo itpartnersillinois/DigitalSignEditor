@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using DigitalSignEditor.Data.Models;
+using DigitalSignEditor.Helpers;
 
 namespace DigitalSignEditor.ApiModel {
 
@@ -14,7 +15,8 @@ namespace DigitalSignEditor.ApiModel {
                 Name = s.Name,
                 Description = s.Description,
                 Id = s.Id,
-                College = s.College
+                College = s.College.ToString().ConvertEnum(),
+                Url = s.Url
             }).ToList();
         }
 

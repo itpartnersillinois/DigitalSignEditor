@@ -22,22 +22,32 @@ namespace DigitalSignEditor.Api {
         }
 
         [HttpPost("Add")]
-        public async Task<int> AddImage([FromForm] IFormFile file, [FromForm] int id) {
-            var sign = await signRepository.ReadAsync(rep => rep.SignItems.FirstOrDefault(s => s.Id == id));
-            if (sign == null || !securityHelper.CanAccess(User, sign.SignId)) {
+        public async Task<int> AddImageSlide([FromForm] IFormFile file, [FromForm] int id) {
+            if (!securityHelper.CanAccess(User, id)) {
                 return default;
             }
             using (var ms = new MemoryStream()) {
                 file.CopyTo(ms);
                 var fileBytes = ms.ToArray();
-                var storageId = await signRepository.CreateAsync(new StorageItem {
+                var storage = new StorageItem {
                     IsActive = true,
                     LastUpdated = DateTime.Now,
                     Name = file.FileName,
                     Data = fileBytes
+                };
+                await signRepository.CreateAsync(storage);
+                var totalItems = await signRepository.ReadAsync(rep => rep.SignItems.Count(s => s.SignId == id));
+                return await signRepository.CreateAsync(new SignItem {
+                    IsActive = true,
+                    LastUpdated = DateTime.Now,
+                    Name = file.FileName,
+                    SignId = id,
+                    EndDate = null,
+                    StartDate = null,
+                    Option = SignType.Image,
+                    Order = totalItems + 1,
+                    StorageItemId = storage.Id
                 });
-                sign.StorageItemId = storageId;
-                return await signRepository.UpdateAsync(sign);
             }
         }
     }
