@@ -8,6 +8,7 @@ namespace DigitalSignEditor.Data.Models {
         public DateTime? EndDate { get; set; }
         public SlideType Option { get; set; }
         public int Order { get; set; }
+        public virtual Sign Sign { get; set; }
         public int SignId { get; set; }
         public DateTime? StartDate { get; set; }
         public int? StorageItemId { get; set; }

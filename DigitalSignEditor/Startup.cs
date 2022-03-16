@@ -1,6 +1,7 @@
 using DigitalSignEditor.Calendar;
 using DigitalSignEditor.Data;
 using DigitalSignEditor.Emergency;
+using DigitalSignEditor.GithubExport;
 using DigitalSignEditor.Helpers;
 using DigitalSignEditor.Twitter;
 using DigitalSignEditor.Weather;
@@ -85,6 +86,9 @@ namespace DigitalSignEditor {
 
             services.AddScoped(sp => new CalendarHelper(WebAccess.GetCalenderJson));
             services.AddScoped(sp => new CalendarIcsHelper(WebAccess.GetCalenderIcs));
+            services.AddScoped<IFileCreator>(sp => new FileCreator(Configuration.GetValue<string>("Github:Owner"),
+                Configuration.GetValue<string>("Github:Repository"),
+                Configuration.GetValue<string>("Github:Token")));
         }
     }
 }

@@ -25,7 +25,7 @@ namespace DigitalSignEditor.Twitter {
 
         public List<Tweet> Tweets { get; set; }
 
-        public void Update(string username) {
+        public virtual void Update(string username) {
             if (numberOfTweets > 0) {
                 var auth = new SingleUserAuthorizer {
                     CredentialStore = new SingleUserInMemoryCredentialStore {
