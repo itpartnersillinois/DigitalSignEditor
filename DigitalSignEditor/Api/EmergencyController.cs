@@ -1,5 +1,6 @@
 ﻿using DigitalSignEditor.Emergency;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DigitalSignEditor.Api {
@@ -15,6 +16,7 @@ namespace DigitalSignEditor.Api {
 
         [HttpGet("Get")]
         [AllowAnonymous]
+        [DisableCors]
         public IActionResult Index() {
             var results = this.container.Get();
             return string.IsNullOrWhiteSpace(results.Title) && string.IsNullOrWhiteSpace(results.Description) ?

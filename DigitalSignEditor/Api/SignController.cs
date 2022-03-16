@@ -33,7 +33,7 @@ namespace DigitalSignEditor.Api {
             if (!securityHelper.CanAccess(User, id)) {
                 return new SignInformation();
             }
-            var sign = await signRepository.ReadAsync(rep => rep.Signs.Include(s => s.SignItems).FirstOrDefault(s => s.IsActive && s.Id == id));
+            var sign = await signRepository.ReadAsync(rep => rep.Signs.Include(s => s.Slides).FirstOrDefault(s => s.IsActive && s.Id == id));
             return new SignInformation(sign);
         }
 

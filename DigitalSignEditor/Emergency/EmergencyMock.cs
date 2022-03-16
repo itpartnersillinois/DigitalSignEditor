@@ -2,6 +2,7 @@
 
 namespace DigitalSignEditor.Emergency {
 
+    // use this to test the website by injecting this in the startup layer
     public class EmergencyMock {
         private static DateTime triggerEndTime = DateTime.Now.AddMinutes(6);
         private static DateTime triggerStartTime = DateTime.Now.AddMinutes(2);

@@ -27,28 +27,29 @@ namespace DigitalSignEditor.Api {
             if (!securityHelper.CanAccess(User, signId)) {
                 return default;
             }
-            var totalItems = await signRepository.ReadAsync(rep => rep.SignItems.Count(s => s.SignId == signId));
-            return await signRepository.CreateAsync(new SignItem {
+            var totalItems = await signRepository.ReadAsync(rep => rep.Slides.Count(s => s.SignId == signId));
+            return await signRepository.CreateAsync(new Slide {
                 IsActive = true,
                 LastUpdated = DateTime.Now,
                 SignId = signId,
                 Name = jsonObject.name,
                 Data = jsonObject.data,
                 Option = jsonObject.option,
-                Order = totalItems + 1
+                Order = totalItems + 1,
+                Url = jsonObject.option == SlideType.Video ? jsonObject.data.ToString().Split(";")[0] : "",
             });
         }
 
         [HttpPost("Move/{id}/{direction}")]
         public async Task<int> MoveSignItem(int id, string direction) {
-            var signId = await signRepository.ReadAsync(rep => rep.SignItems.FirstOrDefault(s => s.Id == id)?.SignId);
+            var signId = await signRepository.ReadAsync(rep => rep.Slides.FirstOrDefault(s => s.Id == id)?.SignId);
             if (signId == null || !securityHelper.CanAccess(User, signId.Value)) {
                 return default;
             }
             // need to reset order to ensure everything is in numerical order with no gaps
             int tempOrder = default;
-            SignItem sign = default;
-            var allSigns = await signRepository.ReadAsync(rep => rep.SignItems.Where(s => s.SignId == signId.Value));
+            Slide sign = default;
+            var allSigns = await signRepository.ReadAsync(rep => rep.Slides.Where(s => s.SignId == signId.Value));
             var allSignsList = allSigns.OrderBy(s => s.Order).ThenBy(s => s.Name).ToList();
             for (int i = 0; i < allSignsList.Count(); i++) {
                 allSignsList[i].Order = i + 1;
@@ -73,14 +74,14 @@ namespace DigitalSignEditor.Api {
 
         [HttpPost("Remove/{id}")]
         public async Task<int> RemoveSignItem(int id) {
-            var sign = await signRepository.ReadAsync(rep => rep.SignItems.FirstOrDefault(s => s.Id == id));
+            var sign = await signRepository.ReadAsync(rep => rep.Slides.FirstOrDefault(s => s.Id == id));
             if (sign == null || !securityHelper.CanAccess(User, sign.SignId)) {
                 return default;
             }
             var order = sign.Order;
             var signId = sign.SignId;
             await signRepository.DeleteAsync(sign);
-            var signsAfter = await signRepository.ReadAsync(rep => rep.SignItems.Where(s => s.SignId == signId && s.Order > order));
+            var signsAfter = await signRepository.ReadAsync(rep => rep.Slides.Where(s => s.SignId == signId && s.Order > order));
             foreach (var signAfter in signsAfter) {
                 signAfter.Order = signAfter.Order - 1;
                 await signRepository.UpdateAsync(signAfter);
@@ -92,7 +93,7 @@ namespace DigitalSignEditor.Api {
         public async Task<int> UpdateSignItem([FromBody] dynamic json) {
             var jsonObject = (dynamic) JObject.Parse(json.ToString());
             int id = int.Parse(jsonObject.id.ToString());
-            var sign = await signRepository.ReadAsync(rep => rep.SignItems.FirstOrDefault(s => s.Id == id));
+            var sign = await signRepository.ReadAsync(rep => rep.Slides.FirstOrDefault(s => s.Id == id));
             if (sign == null || !securityHelper.CanAccess(User, sign.SignId)) {
                 return default;
             }

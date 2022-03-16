@@ -36,15 +36,15 @@ namespace DigitalSignEditor.Api {
                     Data = fileBytes
                 };
                 await signRepository.CreateAsync(storage);
-                var totalItems = await signRepository.ReadAsync(rep => rep.SignItems.Count(s => s.SignId == id));
-                return await signRepository.CreateAsync(new SignItem {
+                var totalItems = await signRepository.ReadAsync(rep => rep.Slides.Count(s => s.SignId == id));
+                return await signRepository.CreateAsync(new Slide {
                     IsActive = true,
                     LastUpdated = DateTime.Now,
                     Name = file.FileName,
                     SignId = id,
                     EndDate = null,
                     StartDate = null,
-                    Option = SignType.Image,
+                    Option = SlideType.Image,
                     Order = totalItems + 1,
                     StorageItemId = storage.Id
                 });

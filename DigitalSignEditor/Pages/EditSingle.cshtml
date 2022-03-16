@@ -40,8 +40,10 @@
     <button class="il-button" id="addVideo" onclick="return video();">Add a Video Slide</button>
 </div>
 <div class="new">
-    <label for="calendarurl">Calendar URL: </label>
-    <input type="text" id="calendarurl" name="calendarurl">
+    <label for="calendartitle">Calendar Title: </label>
+    <input type="text" id="calendartitle" name="calendartitle">
+    <label for="calendarid">Calendar ID: </label>
+    <input type="text" id="calendarid" name="calendarid" class="seconds">
     <button class="il-button" id="addCalendar" onclick="return calendar();">Add a Calendar Slide</button>
 </div>
 
@@ -86,10 +88,16 @@
                 divName.innerHTML = `<label for='name${element.id}' class='hidden'>Name </label><input id='name${element.id}' value='${element.name}' />`
                 divDescription.innerHTML = `<label for='description${element.id}' class='hidden'>Description </label><input id='description${element.id}' value='${element.description}' />`
                 if (element.signOption == 0) {
-                    divData.innerHTML = `<a href="${element.url}" target="_new"><img src="${element.url}" alt=""></a>`
+                    divData.innerHTML = `<a href="${element.url}" target="_blank"><img src="${element.url}" alt=""></a>`
                 }
                 if (element.signOption == 1) {
                     divData.innerHTML = `Weather`
+                }
+                if (element.signOption == 2) {
+                    divData.innerHTML = `<a href="${element.url}" target="_blank">Video</a>`
+                }
+                if (element.signOption == 3) {
+                    divData.innerHTML = `Calendar`
                 }
 
                 divDates.innerHTML = `<label for='from${element.id}'>From </label><input id='from${element.id}' value='${element.startDate}' class='date' /> <label for='to{element.id}'>to</label> <input id='to${element.id}' value='${element.endDate}' class='date' />`
@@ -200,11 +208,41 @@
     }
 
     function calendar() {
-        alert('at this point, we would add a calendar slide -- this is not implemented yet');
+        let object = {};
+        object['signId'] = document.getElementById('slideId').innerText;
+        object['name'] = document.getElementById('calendartitle').value;
+        object['data'] = document.getElementById('calendarid').value;
+        object['option'] = 3;
+        var json = JSON.stringify(object);
+
+        fetch('/Api/SignItem/Add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: json
+        }).then(function (response) {
+            return response.text().then(function (text) {
+                loadItems();
+            });
+        });
     }
     
     function video() {
-        alert('at this point, we would add a video slide -- this is not implemented yet');
+        let object = {};
+        object['signId'] = document.getElementById('slideId').innerText;
+        object['name'] = 'Video Slide';
+        object['data'] = document.getElementById('videourl').value + ';' + document.getElementById('videoseconds').value;
+        object['option'] = 2;
+        var json = JSON.stringify(object);
+
+        fetch('/Api/SignItem/Add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: json
+        }).then(function (response) {
+            return response.text().then(function (text) {
+                loadItems();
+            });
+        });
     }
 </script>
 }

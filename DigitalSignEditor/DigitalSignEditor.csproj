@@ -23,7 +23,6 @@
 
   <ItemGroup>
     <Folder Include="GithubExport\" />
-    <Folder Include="Migrations\" />
     <Folder Include="Translator\" />
   </ItemGroup>
 
