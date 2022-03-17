@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using DigitalSignEditor.ApiModel;
+using DigitalSignEditor.ApiModels;
 using DigitalSignEditor.Data;
 using DigitalSignEditor.Helpers;
 using Microsoft.AspNetCore.Authorization;
@@ -33,7 +33,7 @@ namespace DigitalSignEditor.Api {
             if (!securityHelper.CanAccess(User, id)) {
                 return new SignInformation();
             }
-            var sign = await signRepository.ReadAsync(rep => rep.Signs.Include(s => s.SignItems).FirstOrDefault(s => s.IsActive && s.Id == id));
+            var sign = await signRepository.ReadAsync(rep => rep.Signs.Include(s => s.Slides).FirstOrDefault(s => s.IsActive && s.Id == id));
             return new SignInformation(sign);
         }
 

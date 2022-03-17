@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DigitalSignEditor.Migrations
 {
     [DbContext(typeof(SignContext))]
-    [Migration("20220310182036_Initial")]
+    [Migration("20220317163544_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,6 +20,33 @@ namespace DigitalSignEditor.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.15")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("DigitalSignEditor.Data.Models.CalendarItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsIcs")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CalendarItems");
+                });
 
             modelBuilder.Entity("DigitalSignEditor.Data.Models.Sign", b =>
                 {
@@ -58,6 +85,9 @@ namespace DigitalSignEditor.Migrations
                     b.Property<int>("RatioWidth")
                         .HasColumnType("int");
 
+                    b.Property<int>("SignType")
+                        .HasColumnType("int");
+
                     b.Property<string>("TwitterHandle")
                         .HasColumnType("nvarchar(max)");
 
@@ -75,17 +105,93 @@ namespace DigitalSignEditor.Migrations
                             College = 0,
                             Description = "Sample sign used for testing",
                             IsActive = true,
-                            LastUpdated = new DateTime(2022, 3, 10, 12, 20, 36, 18, DateTimeKind.Local).AddTicks(6693),
+                            LastUpdated = new DateTime(2022, 3, 17, 11, 35, 43, 705, DateTimeKind.Local).AddTicks(4627),
                             MinimumHeight = 600,
                             MinimumWidth = 800,
-                            Name = "Sample Sign",
+                            Name = "Sample Lobby Sign",
                             RatioHeight = 9,
                             RatioWidth = 16,
-                            Url = "#"
+                            SignType = 0,
+                            TwitterHandle = "edILLINOIS",
+                            Url = "edlobby"
+                        },
+                        new
+                        {
+                            Id = -2,
+                            College = 0,
+                            Description = "Sample sign used for testing",
+                            IsActive = true,
+                            LastUpdated = new DateTime(2022, 3, 17, 11, 35, 43, 708, DateTimeKind.Local).AddTicks(8724),
+                            MinimumHeight = 600,
+                            MinimumWidth = 800,
+                            Name = "Sample Title Sign",
+                            RatioHeight = 9,
+                            RatioWidth = 16,
+                            SignType = 2,
+                            TwitterHandle = "",
+                            Url = "oleary"
+                        },
+                        new
+                        {
+                            Id = -3,
+                            College = 1,
+                            Description = "Sample sign used for testing",
+                            IsActive = true,
+                            LastUpdated = new DateTime(2022, 3, 17, 11, 35, 43, 708, DateTimeKind.Local).AddTicks(8829),
+                            MinimumHeight = 600,
+                            MinimumWidth = 800,
+                            Name = "Sample Image Sign",
+                            RatioHeight = 9,
+                            RatioWidth = 16,
+                            SignType = 1,
+                            TwitterHandle = "",
+                            Url = "gies1055"
+                        },
+                        new
+                        {
+                            Id = -4,
+                            College = 1,
+                            Description = "Sample sign used for testing",
+                            IsActive = true,
+                            LastUpdated = new DateTime(2022, 3, 17, 11, 35, 43, 708, DateTimeKind.Local).AddTicks(8834),
+                            MinimumHeight = 600,
+                            MinimumWidth = 800,
+                            Name = "Sample Image Sign #2",
+                            RatioHeight = 9,
+                            RatioWidth = 16,
+                            SignType = 1,
+                            TwitterHandle = "",
+                            Url = "gies1041"
                         });
                 });
 
-            modelBuilder.Entity("DigitalSignEditor.Data.Models.SignItem", b =>
+            modelBuilder.Entity("DigitalSignEditor.Data.Models.SignPermission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SignId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SignId");
+
+                    b.ToTable("SignPermissions");
+                });
+
+            modelBuilder.Entity("DigitalSignEditor.Data.Models.Slide", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -96,6 +202,9 @@ namespace DigitalSignEditor.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DisplayUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("EndDate")
@@ -132,33 +241,7 @@ namespace DigitalSignEditor.Migrations
 
                     b.HasIndex("SignId");
 
-                    b.ToTable("SignItems");
-                });
-
-            modelBuilder.Entity("DigitalSignEditor.Data.Models.SignPermission", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SignId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SignId");
-
-                    b.ToTable("SignPermissions");
+                    b.ToTable("Slides");
                 });
 
             modelBuilder.Entity("DigitalSignEditor.Data.Models.StorageItem", b =>
@@ -185,15 +268,6 @@ namespace DigitalSignEditor.Migrations
                     b.ToTable("StorageItems");
                 });
 
-            modelBuilder.Entity("DigitalSignEditor.Data.Models.SignItem", b =>
-                {
-                    b.HasOne("DigitalSignEditor.Data.Models.Sign", null)
-                        .WithMany("SignItems")
-                        .HasForeignKey("SignId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("DigitalSignEditor.Data.Models.SignPermission", b =>
                 {
                     b.HasOne("DigitalSignEditor.Data.Models.Sign", "Sign")
@@ -205,11 +279,22 @@ namespace DigitalSignEditor.Migrations
                     b.Navigation("Sign");
                 });
 
+            modelBuilder.Entity("DigitalSignEditor.Data.Models.Slide", b =>
+                {
+                    b.HasOne("DigitalSignEditor.Data.Models.Sign", "Sign")
+                        .WithMany("Slides")
+                        .HasForeignKey("SignId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Sign");
+                });
+
             modelBuilder.Entity("DigitalSignEditor.Data.Models.Sign", b =>
                 {
-                    b.Navigation("SignItems");
-
                     b.Navigation("SignPermissions");
+
+                    b.Navigation("Slides");
                 });
 #pragma warning restore 612, 618
         }
