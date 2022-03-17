@@ -112,7 +112,7 @@ namespace DigitalSignEditor.GithubExport {
             return true;
         }
 
-        public string GetUrl(string folder, string file) => hostname + "/" + compressedImageFolder + "/" + folder + "/" + file;
+        public (string, string) GetUrl(string folder, string file) => ("/" + imageFolder + "/" + folder.ToLowerInvariant() + "/" + file.ToLowerInvariant(), hostname + "/" + compressedImageFolder + "/" + folder.ToLowerInvariant() + "/" + file.ToLowerInvariant());
 
         private GitHubClient CreateClient() {
             var client = new GitHubClient(new ProductHeaderValue(headerValue));

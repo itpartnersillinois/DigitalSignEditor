@@ -103,7 +103,7 @@ namespace DigitalSignEditor.Migrations
                             College = 0,
                             Description = "Sample sign used for testing",
                             IsActive = true,
-                            LastUpdated = new DateTime(2022, 3, 16, 9, 39, 50, 863, DateTimeKind.Local).AddTicks(5437),
+                            LastUpdated = new DateTime(2022, 3, 17, 11, 35, 43, 705, DateTimeKind.Local).AddTicks(4627),
                             MinimumHeight = 600,
                             MinimumWidth = 800,
                             Name = "Sample Lobby Sign",
@@ -119,7 +119,7 @@ namespace DigitalSignEditor.Migrations
                             College = 0,
                             Description = "Sample sign used for testing",
                             IsActive = true,
-                            LastUpdated = new DateTime(2022, 3, 16, 9, 39, 50, 867, DateTimeKind.Local).AddTicks(9345),
+                            LastUpdated = new DateTime(2022, 3, 17, 11, 35, 43, 708, DateTimeKind.Local).AddTicks(8724),
                             MinimumHeight = 600,
                             MinimumWidth = 800,
                             Name = "Sample Title Sign",
@@ -135,7 +135,7 @@ namespace DigitalSignEditor.Migrations
                             College = 1,
                             Description = "Sample sign used for testing",
                             IsActive = true,
-                            LastUpdated = new DateTime(2022, 3, 16, 9, 39, 50, 867, DateTimeKind.Local).AddTicks(9499),
+                            LastUpdated = new DateTime(2022, 3, 17, 11, 35, 43, 708, DateTimeKind.Local).AddTicks(8829),
                             MinimumHeight = 600,
                             MinimumWidth = 800,
                             Name = "Sample Image Sign",
@@ -151,7 +151,7 @@ namespace DigitalSignEditor.Migrations
                             College = 1,
                             Description = "Sample sign used for testing",
                             IsActive = true,
-                            LastUpdated = new DateTime(2022, 3, 16, 9, 39, 50, 867, DateTimeKind.Local).AddTicks(9506),
+                            LastUpdated = new DateTime(2022, 3, 17, 11, 35, 43, 708, DateTimeKind.Local).AddTicks(8834),
                             MinimumHeight = 600,
                             MinimumWidth = 800,
                             Name = "Sample Image Sign #2",
@@ -200,6 +200,9 @@ namespace DigitalSignEditor.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DisplayUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("EndDate")
@@ -276,11 +279,13 @@ namespace DigitalSignEditor.Migrations
 
             modelBuilder.Entity("DigitalSignEditor.Data.Models.Slide", b =>
                 {
-                    b.HasOne("DigitalSignEditor.Data.Models.Sign", null)
+                    b.HasOne("DigitalSignEditor.Data.Models.Sign", "Sign")
                         .WithMany("Slides")
                         .HasForeignKey("SignId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Sign");
                 });
 
             modelBuilder.Entity("DigitalSignEditor.Data.Models.Sign", b =>

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using DigitalSignEditor.ApiModel;
+using DigitalSignEditor.ApiModels;
 using DigitalSignEditor.Data;
 using DigitalSignEditor.Helpers;
 using Microsoft.AspNetCore.Authorization;

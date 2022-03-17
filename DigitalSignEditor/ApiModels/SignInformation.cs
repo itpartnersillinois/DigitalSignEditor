@@ -3,7 +3,7 @@ using System.Linq;
 using DigitalSignEditor.Data.Models;
 using DigitalSignEditor.Helpers;
 
-namespace DigitalSignEditor.ApiModel {
+namespace DigitalSignEditor.ApiModels {
 
     public class SignInformation : SignGroupItem {
 

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using DigitalSignEditor.Data;
 using DigitalSignEditor.Data.Models;
 using DigitalSignEditor.GithubExport;
+using DigitalSignEditor.GithubModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -26,8 +27,8 @@ namespace DigitalSignEditor.Api {
         [HttpGet("Transfer")]
         public async Task<string> TransferSigns() {
             foreach (SignType signType in Enum.GetValues(typeof(SignType))) {
-                var signs = await signRepository.ReadAsync(sr => sr.Signs.Include(s => s.Slides).Where(s => s.SignType == signType && s.Slides.Count > 0));
-                var text = JsonConvert.SerializeObject(signs);
+                var signs = await signRepository.ReadAsync(sr => sr.Signs.Include(s => s.Slides).Where(s => s.SignType == signType));
+                var text = JsonConvert.SerializeObject(signs.Select(sign => new GithubSign(sign)));
                 _ = await fileCreator.CreateSharedDataFile(signType.ToString(), text);
                 foreach (var slide in signs.SelectMany(s => s.Slides).Where(slide => slide.StorageItemId.HasValue)) {
                     var file = await signRepository.ReadAsync(sr => sr.StorageItems.FirstOrDefault(s => s.Id == slide.StorageItemId));
@@ -37,7 +38,7 @@ namespace DigitalSignEditor.Api {
                     signRepository.Delete(file);
                 }
                 foreach (var sign in signs) {
-                    var individualText = JsonConvert.SerializeObject(sign);
+                    var individualText = JsonConvert.SerializeObject(new GithubSign(sign));
                     _ = await fileCreator.CreateDataFile(sign.Url, individualText);
                 }
             }

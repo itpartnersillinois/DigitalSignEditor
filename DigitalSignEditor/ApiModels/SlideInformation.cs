@@ -1,4 +1,4 @@
-﻿namespace DigitalSignEditor.ApiModel {
+﻿namespace DigitalSignEditor.ApiModels {
 
     public class SlideInformation {
         public string Data { get; set; }

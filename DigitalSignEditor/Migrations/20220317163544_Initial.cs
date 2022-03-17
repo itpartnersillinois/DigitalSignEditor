@@ -95,6 +95,7 @@ namespace DigitalSignEditor.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Data = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DisplayUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Option = table.Column<int>(type: "int", nullable: false),
                     Order = table.Column<int>(type: "int", nullable: false),
@@ -122,10 +123,10 @@ namespace DigitalSignEditor.Migrations
                 columns: new[] { "Id", "College", "Data", "Description", "IsActive", "LastUpdated", "MinimumHeight", "MinimumWidth", "Name", "RatioHeight", "RatioWidth", "SignType", "TwitterHandle", "Url" },
                 values: new object[,]
                 {
-                    { -1, 0, null, "Sample sign used for testing", true, new DateTime(2022, 3, 16, 9, 39, 50, 863, DateTimeKind.Local).AddTicks(5437), 600, 800, "Sample Lobby Sign", 9, 16, 0, "edILLINOIS", "edlobby" },
-                    { -2, 0, null, "Sample sign used for testing", true, new DateTime(2022, 3, 16, 9, 39, 50, 867, DateTimeKind.Local).AddTicks(9345), 600, 800, "Sample Title Sign", 9, 16, 2, "", "oleary" },
-                    { -3, 1, null, "Sample sign used for testing", true, new DateTime(2022, 3, 16, 9, 39, 50, 867, DateTimeKind.Local).AddTicks(9499), 600, 800, "Sample Image Sign", 9, 16, 1, "", "gies1055" },
-                    { -4, 1, null, "Sample sign used for testing", true, new DateTime(2022, 3, 16, 9, 39, 50, 867, DateTimeKind.Local).AddTicks(9506), 600, 800, "Sample Image Sign #2", 9, 16, 1, "", "gies1041" }
+                    { -1, 0, null, "Sample sign used for testing", true, new DateTime(2022, 3, 17, 11, 35, 43, 705, DateTimeKind.Local).AddTicks(4627), 600, 800, "Sample Lobby Sign", 9, 16, 0, "edILLINOIS", "edlobby" },
+                    { -2, 0, null, "Sample sign used for testing", true, new DateTime(2022, 3, 17, 11, 35, 43, 708, DateTimeKind.Local).AddTicks(8724), 600, 800, "Sample Title Sign", 9, 16, 2, "", "oleary" },
+                    { -3, 1, null, "Sample sign used for testing", true, new DateTime(2022, 3, 17, 11, 35, 43, 708, DateTimeKind.Local).AddTicks(8829), 600, 800, "Sample Image Sign", 9, 16, 1, "", "gies1055" },
+                    { -4, 1, null, "Sample sign used for testing", true, new DateTime(2022, 3, 17, 11, 35, 43, 708, DateTimeKind.Local).AddTicks(8834), 600, 800, "Sample Image Sign #2", 9, 16, 1, "", "gies1041" }
                 });
 
             migrationBuilder.CreateIndex(
