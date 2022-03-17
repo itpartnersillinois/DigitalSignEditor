@@ -23,7 +23,6 @@ namespace DigitalSignEditor.Twitter {
                 Text = this.Text + ": " + quote;
                 Image = status.QuotedStatus?.Entities?.MediaEntities.FirstOrDefault()?.MediaUrlHttps;
             }
-            UserDescription = status.User.Description;
             UserImage = status.User.ProfileImageUrlHttps;
             Username = status.User.Name;
         }
@@ -32,11 +31,7 @@ namespace DigitalSignEditor.Twitter {
 
         public string Image { get; set; }
 
-        public Tweet SecondTweet { get; set; }
         public string Text { get; set; }
-
-        public Tweet ThirdTweet { get; set; }
-        public string UserDescription { get; set; }
 
         public string UserImage { get; set; }
 

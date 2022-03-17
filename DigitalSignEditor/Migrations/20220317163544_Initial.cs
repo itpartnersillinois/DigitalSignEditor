@@ -8,6 +8,23 @@ namespace DigitalSignEditor.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "CalendarItems",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IsIcs = table.Column<bool>(type: "bit", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CalendarItems", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Signs",
                 columns: table => new
                 {
@@ -20,6 +37,7 @@ namespace DigitalSignEditor.Migrations
                     MinimumWidth = table.Column<int>(type: "int", nullable: false),
                     RatioHeight = table.Column<int>(type: "int", nullable: false),
                     RatioWidth = table.Column<int>(type: "int", nullable: false),
+                    SignType = table.Column<int>(type: "int", nullable: false),
                     TwitterHandle = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
@@ -48,36 +66,6 @@ namespace DigitalSignEditor.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SignItems",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Data = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Option = table.Column<int>(type: "int", nullable: false),
-                    Order = table.Column<int>(type: "int", nullable: false),
-                    SignId = table.Column<int>(type: "int", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    StorageItemId = table.Column<int>(type: "int", nullable: true),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SignItems", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SignItems_Signs_SignId",
-                        column: x => x.SignId,
-                        principalTable: "Signs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "SignPermissions",
                 columns: table => new
                 {
@@ -99,29 +87,69 @@ namespace DigitalSignEditor.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Slides",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Data = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DisplayUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Option = table.Column<int>(type: "int", nullable: false),
+                    Order = table.Column<int>(type: "int", nullable: false),
+                    SignId = table.Column<int>(type: "int", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    StorageItemId = table.Column<int>(type: "int", nullable: true),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Slides", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Slides_Signs_SignId",
+                        column: x => x.SignId,
+                        principalTable: "Signs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "Signs",
-                columns: new[] { "Id", "College", "Data", "Description", "IsActive", "LastUpdated", "MinimumHeight", "MinimumWidth", "Name", "RatioHeight", "RatioWidth", "TwitterHandle", "Url" },
-                values: new object[] { -1, 0, null, "Sample sign used for testing", true, new DateTime(2022, 3, 10, 12, 20, 36, 18, DateTimeKind.Local).AddTicks(6693), 600, 800, "Sample Sign", 9, 16, null, "#" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SignItems_SignId",
-                table: "SignItems",
-                column: "SignId");
+                columns: new[] { "Id", "College", "Data", "Description", "IsActive", "LastUpdated", "MinimumHeight", "MinimumWidth", "Name", "RatioHeight", "RatioWidth", "SignType", "TwitterHandle", "Url" },
+                values: new object[,]
+                {
+                    { -1, 0, null, "Sample sign used for testing", true, new DateTime(2022, 3, 17, 11, 35, 43, 705, DateTimeKind.Local).AddTicks(4627), 600, 800, "Sample Lobby Sign", 9, 16, 0, "edILLINOIS", "edlobby" },
+                    { -2, 0, null, "Sample sign used for testing", true, new DateTime(2022, 3, 17, 11, 35, 43, 708, DateTimeKind.Local).AddTicks(8724), 600, 800, "Sample Title Sign", 9, 16, 2, "", "oleary" },
+                    { -3, 1, null, "Sample sign used for testing", true, new DateTime(2022, 3, 17, 11, 35, 43, 708, DateTimeKind.Local).AddTicks(8829), 600, 800, "Sample Image Sign", 9, 16, 1, "", "gies1055" },
+                    { -4, 1, null, "Sample sign used for testing", true, new DateTime(2022, 3, 17, 11, 35, 43, 708, DateTimeKind.Local).AddTicks(8834), 600, 800, "Sample Image Sign #2", 9, 16, 1, "", "gies1041" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_SignPermissions_SignId",
                 table: "SignPermissions",
+                column: "SignId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Slides_SignId",
+                table: "Slides",
                 column: "SignId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "SignItems");
+                name: "CalendarItems");
 
             migrationBuilder.DropTable(
                 name: "SignPermissions");
+
+            migrationBuilder.DropTable(
+                name: "Slides");
 
             migrationBuilder.DropTable(
                 name: "StorageItems");

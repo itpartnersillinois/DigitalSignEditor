@@ -1,4 +1,4 @@
-﻿namespace DigitalSignEditor.ApiModel {
+﻿namespace DigitalSignEditor.ApiModels {
 
     public class SignGroupItem {
         public string College { get; set; }

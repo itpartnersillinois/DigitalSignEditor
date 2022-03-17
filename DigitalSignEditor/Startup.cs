@@ -1,5 +1,8 @@
+using System;
+using DigitalSignEditor.Calendar;
 using DigitalSignEditor.Data;
 using DigitalSignEditor.Emergency;
+using DigitalSignEditor.GithubExport;
 using DigitalSignEditor.Helpers;
 using DigitalSignEditor.Twitter;
 using DigitalSignEditor.Weather;
@@ -39,6 +42,11 @@ namespace DigitalSignEditor {
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseCors(x => x
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .SetIsOriginAllowed(origin => true)
+                .AllowCredentials());
 
             app.UseAuthentication();
             app.UseAuthorization();
@@ -70,12 +78,21 @@ namespace DigitalSignEditor {
 
             services.AddSingleton(access => new EmergencyContainer(EmergencyChecker.Check));
 
-            services.AddSingleton(access => new WeatherHelper());
+            services.AddSingleton(access => new WeatherHelper(WeatherAccess.GetWeather));
 
             services.AddSingleton(access => new TwitterHelper(Configuration.GetValue<string>("Twitter:ConsumerKey"),
                 Configuration.GetValue<string>("Twitter:ConsumerSecret"),
                 Configuration.GetValue<string>("Twitter:OAuthToken"),
                 Configuration.GetValue<string>("Twitter:OAuthTokenSecret")));
+
+            services.AddScoped(sp => new CalendarHelper(WebAccess.GetCalenderJson));
+            services.AddScoped(sp => new CalendarIcsHelper(WebAccess.GetCalenderIcs));
+            services.AddScoped<IFileCreator>(sp => new FileCreator(Configuration.GetValue<string>("Github:Owner"),
+                Configuration.GetValue<string>("Github:Repository"),
+                Configuration.GetValue<string>("Github:Token"),
+                Configuration.GetValue<string>("DigitalSignUrl"),
+                ImageHelper.Resize));
+            services.AddScoped<Func<byte[], int, int, int, int, bool>>(sp => ImageHelper.IsImageValid);
         }
     }
 }

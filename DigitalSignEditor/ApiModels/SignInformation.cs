@@ -3,7 +3,7 @@ using System.Linq;
 using DigitalSignEditor.Data.Models;
 using DigitalSignEditor.Helpers;
 
-namespace DigitalSignEditor.ApiModel {
+namespace DigitalSignEditor.ApiModels {
 
     public class SignInformation : SignGroupItem {
 
@@ -20,7 +20,7 @@ namespace DigitalSignEditor.ApiModel {
             MinimumHeight = sign.MinimumHeight + "px";
             Ratio = sign.RatioWidth + ":" + sign.RatioHeight;
             Twitter = string.IsNullOrWhiteSpace(sign.TwitterHandle) ? "None" : sign.TwitterHandle;
-            Items = sign.SignItems.OrderBy(s => s.Order).ThenBy(s => s.Name).Select(si => new SignInformationItem {
+            Items = sign.Slides.OrderBy(s => s.Order).ThenBy(s => s.Name).Select(si => new SlideInformation {
                 Name = si.Name,
                 Description = string.IsNullOrWhiteSpace(si.Description) ? "" : si.Description,
                 Id = si.Id,
@@ -33,7 +33,7 @@ namespace DigitalSignEditor.ApiModel {
             }).ToList();
         }
 
-        public List<SignInformationItem> Items { get; set; }
+        public List<SlideInformation> Items { get; set; }
 
         public string MinimumHeight { get; set; }
         public string MinimumWidth { get; set; }
