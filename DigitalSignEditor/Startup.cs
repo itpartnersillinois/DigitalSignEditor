@@ -1,3 +1,4 @@
+using System;
 using DigitalSignEditor.Calendar;
 using DigitalSignEditor.Data;
 using DigitalSignEditor.Emergency;
@@ -88,7 +89,10 @@ namespace DigitalSignEditor {
             services.AddScoped(sp => new CalendarIcsHelper(WebAccess.GetCalenderIcs));
             services.AddScoped<IFileCreator>(sp => new FileCreator(Configuration.GetValue<string>("Github:Owner"),
                 Configuration.GetValue<string>("Github:Repository"),
-                Configuration.GetValue<string>("Github:Token")));
+                Configuration.GetValue<string>("Github:Token"),
+                Configuration.GetValue<string>("DigitalSignUrl"),
+                ImageHelper.Resize));
+            services.AddScoped<Func<byte[], int, int, int, int, bool>>(sp => ImageHelper.IsImageValid);
         }
     }
 }

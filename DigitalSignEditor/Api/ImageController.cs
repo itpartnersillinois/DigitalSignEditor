@@ -13,12 +13,14 @@ namespace DigitalSignEditor.Api {
     [Route("api/[controller]")]
     [ApiController]
     public class ImageController : ControllerBase {
+        private readonly Func<byte[], int, int, int, int, bool> imageCheckAction;
         private readonly SecurityHelper securityHelper;
         private readonly ISignRepository signRepository;
 
-        public ImageController(ISignRepository signRepository, SecurityHelper securityHelper) {
+        public ImageController(ISignRepository signRepository, SecurityHelper securityHelper, Func<byte[], int, int, int, int, bool> imageCheckAction) {
             this.signRepository = signRepository;
             this.securityHelper = securityHelper;
+            this.imageCheckAction = imageCheckAction;
         }
 
         [HttpPost("Add")]
@@ -30,7 +32,7 @@ namespace DigitalSignEditor.Api {
             using var ms = new MemoryStream();
             file.CopyTo(ms);
             var fileBytes = ms.ToArray();
-            if (!ImageHelper.IsImageValid(fileBytes, sign.MinimumWidth, sign.MinimumHeight, sign.RatioWidth, sign.RatioHeight)) {
+            if (!imageCheckAction(fileBytes, sign.MinimumWidth, sign.MinimumHeight, sign.RatioWidth, sign.RatioHeight)) {
                 return default;
             }
             var storage = new StorageItem {

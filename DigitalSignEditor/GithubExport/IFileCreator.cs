@@ -6,10 +6,12 @@ namespace DigitalSignEditor.GithubExport {
 
         Task<bool> Commit();
 
-        Task<bool> CreateFile(string filename, byte[] byteArray);
+        Task<bool> CreateDataFile(string filename, string contents);
 
-        Task<bool> CreateFile(string filename, string contents);
+        Task<bool> CreateImageFiles(string folder, string filename, byte[] byteArray);
 
-        Task<bool> DeleteFile(string filename);
+        Task<bool> CreateSharedDataFile(string filename, string contents);
+
+        string GetUrl(string folder, string file);
     }
 }

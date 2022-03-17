@@ -7,6 +7,7 @@ using DigitalSignEditor.GithubExport;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace DigitalSignEditor.Api {
 
@@ -22,23 +23,25 @@ namespace DigitalSignEditor.Api {
             this.fileCreator = fileCreator;
         }
 
-        [HttpGet("TransferSigns")]
+        [HttpGet("Transfer")]
         public async Task<string> TransferSigns() {
             foreach (SignType signType in Enum.GetValues(typeof(SignType))) {
-                var signs = await signRepository.ReadAsync(sr => sr.Signs.Include(s => s.Slides).Where(s => s.SignType == signType));
-                // create json
-                // save json in github
+                var signs = await signRepository.ReadAsync(sr => sr.Signs.Include(s => s.Slides).Where(s => s.SignType == signType && s.Slides.Count > 0));
+                var text = JsonConvert.SerializeObject(signs);
+                _ = await fileCreator.CreateSharedDataFile(signType.ToString(), text);
                 foreach (var slide in signs.SelectMany(s => s.Slides).Where(slide => slide.StorageItemId.HasValue)) {
-                    // save file
-
-                    // save smaller file
-
-                    // remove storage item
-
-                    // remove storage item id
+                    var file = await signRepository.ReadAsync(sr => sr.StorageItems.FirstOrDefault(s => s.Id == slide.StorageItemId));
+                    _ = await fileCreator.CreateImageFiles(slide.Sign.Url, file.Name, file.Data);
+                    slide.AssignUrl(fileCreator.GetUrl(slide.Sign.Url, file.Name));
+                    signRepository.Update(slide);
+                    signRepository.Delete(file);
+                }
+                foreach (var sign in signs) {
+                    var individualText = JsonConvert.SerializeObject(sign);
+                    _ = await fileCreator.CreateDataFile(sign.Url, individualText);
                 }
             }
-            // commit changes
+            _ = await fileCreator.Commit();
             return "OK";
         }
     }
