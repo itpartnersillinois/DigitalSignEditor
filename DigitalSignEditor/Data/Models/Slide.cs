@@ -7,6 +7,7 @@ namespace DigitalSignEditor.Data.Models {
         public string Data { get; set; }
         public string Description { get; set; }
         public string DisplayUrl { get; set; }
+        public string DisplayUrlCompressed { get; set; }
         public DateTime? EndDate { get; set; }
         public SlideType Option { get; set; }
         public int Order { get; set; }
@@ -21,10 +22,11 @@ namespace DigitalSignEditor.Data.Models {
         public int? StorageItemId { get; set; }
         public string Url { get; set; }
 
-        public void AssignUrl((string, string) url) {
+        public void AssignUrl(string url, string fullUrl, string compressedUrl) {
             StorageItemId = null;
-            Url = url.Item1;
-            DisplayUrl = url.Item2;
+            Url = url;
+            DisplayUrl = fullUrl;
+            DisplayUrlCompressed = compressedUrl;
         }
     }
 }

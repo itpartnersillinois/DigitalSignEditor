@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DigitalSignEditor.Migrations
 {
     [DbContext(typeof(SignContext))]
-    [Migration("20220317163544_Initial")]
+    [Migration("20220318145619_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -105,7 +105,7 @@ namespace DigitalSignEditor.Migrations
                             College = 0,
                             Description = "Sample sign used for testing",
                             IsActive = true,
-                            LastUpdated = new DateTime(2022, 3, 17, 11, 35, 43, 705, DateTimeKind.Local).AddTicks(4627),
+                            LastUpdated = new DateTime(2022, 3, 18, 9, 56, 19, 59, DateTimeKind.Local).AddTicks(8283),
                             MinimumHeight = 600,
                             MinimumWidth = 800,
                             Name = "Sample Lobby Sign",
@@ -121,7 +121,7 @@ namespace DigitalSignEditor.Migrations
                             College = 0,
                             Description = "Sample sign used for testing",
                             IsActive = true,
-                            LastUpdated = new DateTime(2022, 3, 17, 11, 35, 43, 708, DateTimeKind.Local).AddTicks(8724),
+                            LastUpdated = new DateTime(2022, 3, 18, 9, 56, 19, 63, DateTimeKind.Local).AddTicks(953),
                             MinimumHeight = 600,
                             MinimumWidth = 800,
                             Name = "Sample Title Sign",
@@ -137,7 +137,7 @@ namespace DigitalSignEditor.Migrations
                             College = 1,
                             Description = "Sample sign used for testing",
                             IsActive = true,
-                            LastUpdated = new DateTime(2022, 3, 17, 11, 35, 43, 708, DateTimeKind.Local).AddTicks(8829),
+                            LastUpdated = new DateTime(2022, 3, 18, 9, 56, 19, 63, DateTimeKind.Local).AddTicks(1040),
                             MinimumHeight = 600,
                             MinimumWidth = 800,
                             Name = "Sample Image Sign",
@@ -153,7 +153,7 @@ namespace DigitalSignEditor.Migrations
                             College = 1,
                             Description = "Sample sign used for testing",
                             IsActive = true,
-                            LastUpdated = new DateTime(2022, 3, 17, 11, 35, 43, 708, DateTimeKind.Local).AddTicks(8834),
+                            LastUpdated = new DateTime(2022, 3, 18, 9, 56, 19, 63, DateTimeKind.Local).AddTicks(1045),
                             MinimumHeight = 600,
                             MinimumWidth = 800,
                             Name = "Sample Image Sign #2",
@@ -205,6 +205,9 @@ namespace DigitalSignEditor.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DisplayUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DisplayUrlCompressed")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("EndDate")

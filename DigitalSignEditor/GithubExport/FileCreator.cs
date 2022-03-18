@@ -5,11 +5,9 @@ using Octokit;
 
 namespace DigitalSignEditor.GithubExport {
 
+    // assuming that the all the branches, folders and the timeout.json file already exists -- if it doesn't, this will error out.
     public class FileCreator : IFileCreator {
-
-        // assuming that the all the folders and the timeout.json file already exists -- if it doesn't, this will error out.
         private const string branch = "staging";
-
         private const string compressedImageFolder = "image_web";
         private const string dataFolder = "json";
         private const string dataFolderShared = "_data";
@@ -26,7 +24,7 @@ namespace DigitalSignEditor.GithubExport {
             this.owner = owner;
             this.repositoryName = repositoryName;
             this.token = token;
-            this.hostname = hostname;
+            this.hostname = hostname.TrimEnd('/');
             this.resizeAction = resizeAction;
         }
 
@@ -112,7 +110,11 @@ namespace DigitalSignEditor.GithubExport {
             return true;
         }
 
-        public (string, string) GetUrl(string folder, string file) => ("/" + imageFolder + "/" + folder.ToLowerInvariant() + "/" + file.ToLowerInvariant(), hostname + "/" + compressedImageFolder + "/" + folder.ToLowerInvariant() + "/" + file.ToLowerInvariant());
+        public string GetCompressedUrl(string folder, string file) => hostname + "/" + compressedImageFolder + "/" + folder.ToLowerInvariant() + "/" + file.ToLowerInvariant();
+
+        public string GetFullUrl(string folder, string file) => hostname + GetUrl(folder, file);
+
+        public string GetUrl(string folder, string file) => "/" + imageFolder + "/" + folder.ToLowerInvariant() + "/" + file.ToLowerInvariant();
 
         private GitHubClient CreateClient() {
             var client = new GitHubClient(new ProductHeaderValue(headerValue));

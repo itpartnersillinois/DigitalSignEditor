@@ -33,14 +33,13 @@ namespace DigitalSignEditor.Api {
                 foreach (var slide in signs.SelectMany(s => s.Slides).Where(slide => slide.StorageItemId.HasValue)) {
                     var file = await signRepository.ReadAsync(sr => sr.StorageItems.FirstOrDefault(s => s.Id == slide.StorageItemId));
                     _ = await fileCreator.CreateImageFiles(slide.Sign.Url, file.Name, file.Data);
-                    slide.AssignUrl(fileCreator.GetUrl(slide.Sign.Url, file.Name));
+                    slide.AssignUrl(fileCreator.GetUrl(slide.Sign.Url, file.Name),
+                        fileCreator.GetFullUrl(slide.Sign.Url, file.Name),
+                        fileCreator.GetCompressedUrl(slide.Sign.Url, file.Name));
                     signRepository.Update(slide);
                     signRepository.Delete(file);
                 }
-                foreach (var sign in signs) {
-                    var individualText = JsonConvert.SerializeObject(new GithubSign(sign));
-                    _ = await fileCreator.CreateDataFile(sign.Url, individualText);
-                }
+                await signs.ForEachAsync(sign => fileCreator.CreateDataFile(sign.Url, JsonConvert.SerializeObject(new GithubSign(sign))));
             }
             _ = await fileCreator.Commit();
             return "OK";
