@@ -20,6 +20,8 @@ namespace DigitalSignEditorUnitTest.GithubModels {
                     new Slide {
                         Url = "testurl",
                         Name = "testslidename",
+                        DisplayUrl = "test full url",
+                        DisplayUrlCompressed = "test full compressed url",
                         Option = SlideType.Image,
                         IsActive = true,
                         StartDate = null,
@@ -28,6 +30,8 @@ namespace DigitalSignEditorUnitTest.GithubModels {
                     new Slide {
                         Url = "testurl2",
                         Name = "testslidename2",
+                        DisplayUrl = "test full url 2",
+                        DisplayUrlCompressed = "test full compressed url 2",
                         Option = SlideType.Weather,
                         IsActive = true,
                         StartDate = null,
@@ -43,7 +47,7 @@ namespace DigitalSignEditorUnitTest.GithubModels {
             Assert.AreEqual("test", githubSign.Url);
             Assert.AreEqual("test name", githubSign.Title);
             Assert.AreEqual(2, githubSign.Slides.Count);
-            var jsonExpected = "{\"college\":\"college_of_education\",\"slides\":[{\"filename\":\"testurl\",\"type\":\"image\"},{\"filename\":\"testurl2\",\"type\":\"weather\"}],\"title\":\"test name\",\"twitter\":\"twitter\",\"url\":\"test\"}";
+            var jsonExpected = "{\"college\":\"college_of_education\",\"slides\":[{\"filename\":\"testurl\",\"filenameCompressed\":\"test full compressed url\",\"filenameFull\":\"test full url\",\"type\":\"image\"},{\"filename\":\"testurl2\",\"filenameCompressed\":\"test full compressed url 2\",\"filenameFull\":\"test full url 2\",\"type\":\"weather\"}],\"title\":\"test name\",\"twitter\":\"twitter\",\"url\":\"test\"}";
             Assert.AreEqual(jsonExpected, JsonConvert.SerializeObject(githubSign));
         }
 
