@@ -1,4 +1,5 @@
 ﻿using DigitalSignEditor.Data.Models;
+using Newtonsoft.Json;
 
 namespace DigitalSignEditor.GithubModels {
 
@@ -6,10 +7,21 @@ namespace DigitalSignEditor.GithubModels {
 
         public GithubSlide(Slide slide) {
             Filename = slide.Url ?? "";
+            FilenameFull = slide.DisplayUrl ?? "";
+            FilenameCompressed = slide.DisplayUrlCompressed ?? "";
             Type = slide.Option.ToString().ToLowerInvariant();
         }
 
+        [JsonProperty("filename")]
         public string Filename { get; set; }
+
+        [JsonProperty("filenameCompressed")]
+        public string FilenameCompressed { get; set; }
+
+        [JsonProperty("filenameFull")]
+        public string FilenameFull { get; set; }
+
+        [JsonProperty("type")]
         public string Type { get; set; }
     }
 }

@@ -29,7 +29,7 @@ namespace DigitalSignEditor.ApiModels {
                 Order = si.Order,
                 SignOption = (int) si.Option,
                 StartDate = si.StartDate.HasValue ? si.StartDate.Value.ToString("d") : "N/A",
-                Url = string.IsNullOrWhiteSpace(si.Url) ? "/Image/" + si.StorageItemId : si.Url
+                Url = string.IsNullOrWhiteSpace(si.DisplayUrl) ? "/Image/" + si.StorageItemId : si.DisplayUrl
             }).ToList();
         }
 
