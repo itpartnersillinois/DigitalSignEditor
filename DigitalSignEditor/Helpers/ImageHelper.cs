@@ -1,12 +1,15 @@
-﻿namespace DigitalSignEditor.Helpers {
+﻿using System;
+using System.IO;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+
+namespace DigitalSignEditor.Helpers {
 
     public static class ImageHelper {
-        private const int resizedWith = 800;
+        private const int resizedWidth = 800;
 
         public static bool IsImageValid(byte[] byteArray, int minimumWidth, int minimumHeight, int aspectWidth, int aspectHeight) {
-            return true;
-            /*
-            var image = Image.FromStream(new MemoryStream(byteArray));
+            var image = Image.Identify(byteArray);
             if (image == null) {
                 return false;
             }
@@ -16,19 +19,15 @@
             double actualRatio = image.Width / image.Height;
             double expectedRatio = aspectWidth / aspectHeight;
             return Math.Round(actualRatio, 2) == Math.Round(expectedRatio, 2);
-            */
         }
 
         public static byte[] Resize(byte[] byteArray) {
-            return byteArray;
-            /*
-            var image = Image.FromStream(new MemoryStream(byteArray));
-            var newHeight = resizedWith * image.Height / image.Width;
-            var resized = (Image) new Bitmap(image, new Size(resizedWith, newHeight));
+            var image = Image.Load(byteArray, out var format);
+            var newHeight = resizedWidth * image.Height / image.Width;
+            image.Mutate(x => x.Resize(resizedWidth, newHeight));
             using var ms = new MemoryStream();
-            resized.Save(ms, image.RawFormat);
+            image.Save(ms, format);
             return ms.ToArray();
-            */
         }
     }
 }

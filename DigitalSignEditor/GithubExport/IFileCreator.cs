@@ -12,6 +12,10 @@ namespace DigitalSignEditor.GithubExport {
 
         Task<bool> CreateSharedDataFile(string filename, string contents);
 
-        (string, string) GetUrl(string folder, string file);
+        string GetCompressedUrl(string folder, string file);
+
+        string GetFullUrl(string folder, string file);
+
+        string GetUrl(string folder, string file);
     }
 }
