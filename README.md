@@ -22,9 +22,11 @@ Uses CI.
 
 Download the code. There is a database, but this uses EF to generate the database if it doesn't exist. Use NuGet to get the latest copy of the executables.
 
-To build the database, run Update-Database in Package Manager Console (see https://docs.microsoft.com/en-us/ef/core/cli/powershell). Note that signs and sign permissions need to be added manually. This will add a sample sign automatically.
+To build the database, run Update-Database in Package Manager Console (see https://docs.microsoft.com/en-us/ef/core/cli/powershell). Note that calendars, signs, and sign permissions need to be added manually. This will add sample signs automatically.
 
-This will require an API key from Github. 
+This will require an Token from Github (pulled from https://github.com/settings/tokens). Remember to give the the token access to contents and pull requests in the repository. 
+
+This will require an API key from Twitter (pulled from Project and Apps at https://developer.twitter.com/en/portal)
 
 ## Notes (error logging, external tools, links, etc.): 
 
