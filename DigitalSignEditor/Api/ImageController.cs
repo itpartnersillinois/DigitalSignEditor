@@ -14,10 +14,10 @@ namespace DigitalSignEditor.Api {
     [ApiController]
     public class ImageController : ControllerBase {
         private readonly Func<byte[], int, int, int, int, bool> imageCheckAction;
-        private readonly SecurityHelper securityHelper;
+        private readonly ISecurityHelper securityHelper;
         private readonly ISignRepository signRepository;
 
-        public ImageController(ISignRepository signRepository, SecurityHelper securityHelper, Func<byte[], int, int, int, int, bool> imageCheckAction) {
+        public ImageController(ISignRepository signRepository, ISecurityHelper securityHelper, Func<byte[], int, int, int, int, bool> imageCheckAction) {
             this.signRepository = signRepository;
             this.securityHelper = securityHelper;
             this.imageCheckAction = imageCheckAction;
