@@ -74,7 +74,7 @@ namespace DigitalSignEditor {
 
             services.AddScoped<ISignRepository, SignRepository>(sp => new SignRepository(sp.GetRequiredService<IDbContextFactory<SignContext>>()));
 
-            services.AddScoped(sp => new SecurityHelper(sp.GetRequiredService<ISignRepository>(), Configuration.GetValue<string>("AdminList")));
+            services.AddScoped<ISecurityHelper, SecurityHelper>(sp => new SecurityHelper(sp.GetRequiredService<ISignRepository>(), Configuration.GetValue<string>("AdminList")));
 
             services.AddSingleton(access => new EmergencyContainer(EmergencyChecker.Check));
 

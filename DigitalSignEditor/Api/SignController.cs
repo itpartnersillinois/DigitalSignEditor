@@ -13,10 +13,10 @@ namespace DigitalSignEditor.Api {
     [ApiController]
     [AllowAnonymous]
     public class SignController : ControllerBase {
-        private SecurityHelper securityHelper;
+        private ISecurityHelper securityHelper;
         private ISignRepository signRepository;
 
-        public SignController(ISignRepository signRepository, SecurityHelper securityHelper) {
+        public SignController(ISignRepository signRepository, ISecurityHelper securityHelper) {
             this.signRepository = signRepository;
             this.securityHelper = securityHelper;
         }

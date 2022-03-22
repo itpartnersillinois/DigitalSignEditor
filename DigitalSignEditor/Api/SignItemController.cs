@@ -12,10 +12,10 @@ namespace DigitalSignEditor.Api {
     [Route("api/[controller]")]
     [ApiController]
     public class SignItemController : ControllerBase {
-        private SecurityHelper securityHelper;
+        private ISecurityHelper securityHelper;
         private ISignRepository signRepository;
 
-        public SignItemController(ISignRepository signRepository, SecurityHelper securityHelper) {
+        public SignItemController(ISignRepository signRepository, ISecurityHelper securityHelper) {
             this.signRepository = signRepository;
             this.securityHelper = securityHelper;
         }

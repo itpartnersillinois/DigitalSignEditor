@@ -5,7 +5,7 @@ using DigitalSignEditor.Data;
 
 namespace DigitalSignEditor.Helpers {
 
-    public class SecurityHelper {
+    public class SecurityHelper : ISecurityHelper {
 
         public SecurityHelper(ISignRepository signRepository, string adminList) {
             admin = adminList.Split(";").ToList();
