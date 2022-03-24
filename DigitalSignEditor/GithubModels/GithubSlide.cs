@@ -9,6 +9,7 @@ namespace DigitalSignEditor.GithubModels {
             Filename = slide.Url ?? "";
             FilenameFull = slide.DisplayUrl ?? "";
             FilenameCompressed = slide.DisplayUrlCompressed ?? "";
+            Title = slide.Name;
             Type = slide.Option.ToString().ToLowerInvariant();
         }
 
@@ -20,6 +21,9 @@ namespace DigitalSignEditor.GithubModels {
 
         [JsonProperty("filenameFull")]
         public string FilenameFull { get; set; }
+
+        [JsonProperty("title")]
+        public string Title { get; set; }
 
         [JsonProperty("type")]
         public string Type { get; set; }
