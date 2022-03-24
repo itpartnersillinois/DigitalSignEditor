@@ -87,7 +87,7 @@ namespace DigitalSignEditor {
 
             services.AddScoped(sp => new CalendarHelper(WebAccess.GetCalenderJson));
             services.AddScoped(sp => new CalendarIcsHelper(WebAccess.GetCalenderIcs));
-            services.AddScoped<IFileCreator>(sp => new FileCreator(Configuration.GetValue<string>("Github:Owner"),
+            services.AddScoped<IFileCreatorFactory>(sp => new FileCreatorFactory(Configuration.GetValue<string>("Github:Owner"),
                 Configuration.GetValue<string>("Github:Repository"),
                 Configuration.GetValue<string>("Github:Token"),
                 Configuration.GetValue<string>("DigitalSignUrl"),

@@ -4,5 +4,5 @@
 
     public enum SignType { Lobby, Simple, SimpleWithTitle }
 
-    public enum SlideType { Image, Weather, Video, OutlookCalendar }
+    public enum SlideType { Image, Weather, Video, Calendar }
 }
