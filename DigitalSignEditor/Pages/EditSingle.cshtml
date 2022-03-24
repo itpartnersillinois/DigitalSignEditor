@@ -65,7 +65,7 @@
             }
         }).then(res => res.json()).then(data => {
             document.getElementById('slideId').innerText = id;
-            document.getElementById('name').innerHTML = `<a href='${data.url}' target='_blank'>${data.name}</a>`;
+            document.getElementById('name').innerHTML = data.name;
             document.getElementById('college').innerText = data.college;
             document.getElementById('description').innerText = data.description;
             document.getElementById('twitter').innerText = data.twitter;
