@@ -31,7 +31,7 @@ namespace DigitalSignEditor.Api {
             Task.Run(() => {
                 var returnValue = new StringBuilder();
                 foreach (SignType signType in Enum.GetValues(typeof(SignType))) {
-                    var signs = signRepository.Read(sr => sr.Signs.Include(s => s.Slides).Where(s => s.SignType == signType));
+                    var signs = signRepository.Read(sr => sr.Signs.Include(s => s.Slides).Where(s => s.SignType == signType).ToList());
                     _ = returnValue.Append(" Slide " + signType.ToString() + ". ");
                     foreach (var slide in signs.SelectMany(s => s.Slides).Where(slide => slide.StorageItemId.HasValue)) {
                         var signUrl = signs.First(s => s.Id == slide.SignId).Url;
