@@ -47,7 +47,7 @@ namespace DigitalSignEditorUnitTest.GithubModels {
             Assert.AreEqual("test", githubSign.Url);
             Assert.AreEqual("test name", githubSign.Title);
             Assert.AreEqual(2, githubSign.Slides.Count);
-            var jsonExpected = "{\"college\":\"college_of_education\",\"slides\":[{\"filename\":\"testurl\",\"filenameCompressed\":\"test full compressed url\",\"filenameFull\":\"test full url\",\"type\":\"image\"},{\"filename\":\"testurl2\",\"filenameCompressed\":\"test full compressed url 2\",\"filenameFull\":\"test full url 2\",\"type\":\"weather\"}],\"title\":\"test name\",\"twitter\":\"twitter\",\"url\":\"test\"}";
+            var jsonExpected = "{\"college\":\"college_of_education\",\"slides\":[{\"filename\":\"testurl\",\"filenameCompressed\":\"test full compressed url\",\"filenameFull\":\"test full url\",\"title\":\"testslidename\",\"type\":\"image\"},{\"filename\":\"testurl2\",\"filenameCompressed\":\"test full compressed url 2\",\"filenameFull\":\"test full url 2\",\"title\":\"testslidename2\",\"type\":\"weather\"}],\"title\":\"test name\",\"twitter\":\"twitter\",\"url\":\"test\"}";
             Assert.AreEqual(jsonExpected, JsonConvert.SerializeObject(githubSign));
         }
 
