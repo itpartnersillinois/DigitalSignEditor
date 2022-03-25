@@ -6,6 +6,7 @@ using Octokit;
 namespace DigitalSignEditor.GithubExport {
 
     // assuming that the all the branches, folders and the timeout.json file already exists -- if it doesn't, this will error out.
+    // using Thread.Sleep(1000) to fix issues with response
     public class FileCreator : IFileCreator {
         private const string branch = "staging";
         private const string compressedImageFolder = "images_web";
@@ -66,58 +67,67 @@ namespace DigitalSignEditor.GithubExport {
         }
 
         public bool CreateImageFiles(string folder, string filename, byte[] byteArray) {
-            var newFilename = filename.ToLowerInvariant();
-            var newFolder = folder.ToLowerInvariant();
-            var client = CreateClient();
-            var folderList = client.Repository.Content.GetAllContentsByRef(owner, repositoryName, imageFolder, branch);
-            if (!folderList.Result.Any(x => x.Name.StartsWith(newFolder))) {
-                _ = client.Repository.Content.CreateFile(owner, repositoryName, imageFolder + "/" + newFolder + "/" + newFilename,
-                    new CreateFileRequest("Commit for " + newFilename, Convert.ToBase64String(byteArray), branch, false));
-            } else {
-                var fileList = client.Repository.Content.GetAllContentsByRef(owner, repositoryName, imageFolder + "/" + newFolder, branch);
-                if (fileList.Result.Any(x => x.Name == newFilename)) {
-                    var sha = fileList.Result.First(x => x.Name == newFilename).Sha;
-                    _ = client.Repository.Content.UpdateFile(owner, repositoryName, imageFolder + "/" + newFolder + "/" + newFilename,
-                        new UpdateFileRequest("Update " + newFilename, Convert.ToBase64String(byteArray), sha, branch, false));
-                } else {
+            try {
+                var newFilename = filename.ToLowerInvariant();
+                var newFolder = folder.ToLowerInvariant();
+                var client = CreateClient();
+                var folderList = client.Repository.Content.GetAllContentsByRef(owner, repositoryName, imageFolder, branch);
+                if (!folderList.Result.Any(x => x.Name.StartsWith(newFolder))) {
                     _ = client.Repository.Content.CreateFile(owner, repositoryName, imageFolder + "/" + newFolder + "/" + newFilename,
                         new CreateFileRequest("Commit for " + newFilename, Convert.ToBase64String(byteArray), branch, false));
-                }
-            }
-            var compressedByteArray = resizeAction(byteArray);
-            var folderListCompressed = client.Repository.Content.GetAllContentsByRef(owner, repositoryName, compressedImageFolder, branch);
-            if (!folderListCompressed.Result.Any(x => x.Name.StartsWith(newFolder))) {
-                _ = client.Repository.Content.CreateFile(owner, repositoryName, compressedImageFolder + "/" + newFolder + "/" + newFilename,
-                    new CreateFileRequest("Commit for " + newFilename, Convert.ToBase64String(byteArray), branch, false));
-            } else {
-                var fileListCompressed = client.Repository.Content.GetAllContentsByRef(owner, repositoryName, compressedImageFolder + "/" + newFolder, branch);
-                if (fileListCompressed.Result.Any(x => x.Name == newFilename)) {
-                    var sha = fileListCompressed.Result.First(x => x.Name == newFilename).Sha;
-                    _ = client.Repository.Content.UpdateFile(owner, repositoryName, compressedImageFolder + "/" + newFolder + "/" + newFilename,
-                        new UpdateFileRequest("Update " + newFilename, Convert.ToBase64String(compressedByteArray), sha, branch, false));
                 } else {
-                    _ = client.Repository.Content.CreateFile(owner, repositoryName, compressedImageFolder + "/" + newFolder + "/" + newFilename,
-                        new CreateFileRequest("Commit for " + newFilename, Convert.ToBase64String(compressedByteArray), branch, false));
+                    var fileList = client.Repository.Content.GetAllContentsByRef(owner, repositoryName, imageFolder + "/" + newFolder, branch);
+                    if (fileList.Result.Any(x => x.Name == newFilename)) {
+                        var sha = fileList.Result.First(x => x.Name == newFilename).Sha;
+                        _ = client.Repository.Content.UpdateFile(owner, repositoryName, imageFolder + "/" + newFolder + "/" + newFilename,
+                            new UpdateFileRequest("Update " + newFilename, Convert.ToBase64String(byteArray), sha, branch, false));
+                    } else {
+                        _ = client.Repository.Content.CreateFile(owner, repositoryName, imageFolder + "/" + newFolder + "/" + newFilename,
+                            new CreateFileRequest("Commit for " + newFilename, Convert.ToBase64String(byteArray), branch, false));
+                    }
                 }
+                Thread.Sleep(1000);
+                var compressedByteArray = resizeAction(byteArray);
+                var folderListCompressed = client.Repository.Content.GetAllContentsByRef(owner, repositoryName, compressedImageFolder, branch);
+                if (!folderListCompressed.Result.Any(x => x.Name.StartsWith(newFolder))) {
+                    _ = client.Repository.Content.CreateFile(owner, repositoryName, compressedImageFolder + "/" + newFolder + "/" + newFilename,
+                        new CreateFileRequest("Commit for " + newFilename, Convert.ToBase64String(byteArray), branch, false));
+                } else {
+                    var fileListCompressed = client.Repository.Content.GetAllContentsByRef(owner, repositoryName, compressedImageFolder + "/" + newFolder, branch);
+                    if (fileListCompressed.Result.Any(x => x.Name == newFilename)) {
+                        var sha = fileListCompressed.Result.First(x => x.Name == newFilename).Sha;
+                        _ = client.Repository.Content.UpdateFile(owner, repositoryName, compressedImageFolder + "/" + newFolder + "/" + newFilename,
+                            new UpdateFileRequest("Update " + newFilename, Convert.ToBase64String(compressedByteArray), sha, branch, false));
+                    } else {
+                        _ = client.Repository.Content.CreateFile(owner, repositoryName, compressedImageFolder + "/" + newFolder + "/" + newFilename,
+                            new CreateFileRequest("Commit for " + newFilename, Convert.ToBase64String(compressedByteArray), branch, false));
+                    }
+                }
+                Thread.Sleep(1000);
+                return true;
+            } catch (Exception e) {
+                throw new Exception("Image error with filename " + filename, e);
             }
-            Thread.Sleep(1000);
-            return true;
         }
 
         public bool CreateSharedDataFile(string filename, string contents) {
-            var newFilename = filename.ToLowerInvariant() + ".json";
-            var client = CreateClient();
-            var fileList = client.Repository.Content.GetAllContentsByRef(owner, repositoryName, dataFolderShared, branch);
-            if (fileList.Result.Any(x => x.Name == newFilename)) {
-                var sha = fileList.Result.First(x => x.Name == newFilename).Sha;
-                _ = client.Repository.Content.UpdateFile(owner, repositoryName, dataFolderShared + "/" + newFilename,
-                    new UpdateFileRequest("Update " + newFilename, contents, sha, branch));
-            } else {
-                _ = client.Repository.Content.CreateFile(owner, repositoryName, dataFolderShared + "/" + newFilename,
-                    new CreateFileRequest("Commit for " + newFilename, contents, branch));
+            try {
+                var newFilename = filename.ToLowerInvariant() + ".json";
+                var client = CreateClient();
+                var fileList = client.Repository.Content.GetAllContentsByRef(owner, repositoryName, dataFolderShared, branch);
+                if (fileList.Result.Any(x => x.Name == newFilename)) {
+                    var sha = fileList.Result.First(x => x.Name == newFilename).Sha;
+                    _ = client.Repository.Content.UpdateFile(owner, repositoryName, dataFolderShared + "/" + newFilename,
+                        new UpdateFileRequest("Update " + newFilename, contents, sha, branch));
+                } else {
+                    _ = client.Repository.Content.CreateFile(owner, repositoryName, dataFolderShared + "/" + newFilename,
+                        new CreateFileRequest("Commit for " + newFilename, contents, branch));
+                }
+                Thread.Sleep(1000);
+                return true;
+            } catch (Exception e) {
+                throw new Exception("Shared data file error with filename " + filename, e);
             }
-            Thread.Sleep(1000);
-            return true;
         }
 
         public string GetCompressedUrl(string folder, string file) => hostname + "/" + compressedImageFolder + "/" + folder.ToLowerInvariant() + "/" + file.ToLowerInvariant();
