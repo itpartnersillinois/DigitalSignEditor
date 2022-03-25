@@ -6,6 +6,8 @@ Project to manage the digital signs in Github
 
 [![deploy_main](https://github.com/itpartnersillinois/DigitalSignEditor/actions/workflows/deploy_main.yml/badge.svg?branch=main)](https://github.com/itpartnersillinois/DigitalSignEditor/actions/workflows/deploy_main.yml)
 
+[![test_develop](https://github.com/itpartnersillinois/DigitalSignEditor/actions/workflows/test_develop.yml/badge.svg)](https://github.com/itpartnersillinois/DigitalSignEditor/actions/workflows/test_develop.yml)
+
 ## Production location: 
 
 Nothing yet
