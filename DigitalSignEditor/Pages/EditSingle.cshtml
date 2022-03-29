@@ -10,12 +10,14 @@
             <p>College: <span id="college"></span></p>
             <p>Description: <span id="description"></span></p>
             <p>Twitter Feed: <span id="twitter"></span></p>
+            <p>Sign Type: <span id="signtype"></span></p>
+            <p>Only use slides that are applicable for your sign type. Contact IT Partners for more information.</p>
         </div>
         <div class="column">
             <p>Minimum Height for Images: <span id="minimumheight"></span></p>
             <p>Minimum Width for Images: <span id="minimumwidth"></span></p>
             <p>Image Ratio: <span id="ratio"></span></p>
-            <p>Note that images that do not meet these requirements will not be accepted.</p>
+            <p>Note that images that do not meet these requirements will not be accepted. If an image is not getting uploaded, confirm it meets the minimum size and aspect ratio.</p>
         </div>
     </div>
 </div>
@@ -27,25 +29,25 @@
 <h2>Add New Slides</h2>
 <div class="new">
     <label for="image-upload" class="hidden">Choose an image to upload</label>
-<input type="file" id="image-upload" name="image-upload" multiple accept="image/*">
-<button class="il-button" id="addImage" onclick="return picture();">Add an Image Slide</button>
+<input type="file" id="image-upload" name="image-upload" multiple accept="image/*" onchange="return addpicture();" >
+<button class="il-button" id="addImage" onclick="return picture();" disabled>Add an Image Slide</button>
 </div>
 <div class="new">
 <button class="il-button" id="addWeather" onclick="return weather();">Add a Weather Slide</button>
 </div>
 <div class="new">
     <label for="videourl">Video URL: </label>
-    <input type="text" id="videourl" name="videourl">
+    <input type="text" id="videourl" name="videourl" onchange="return addvideo();" >
     <label for="videoseconds">Seconds to play: </label>
-    <input type="text" id="videoseconds" name="videoseconds" class="seconds">
-    <button class="il-button" id="addVideo" onclick="return video();">Add a Video Slide</button>
+    <input type="text" id="videoseconds" name="videoseconds" class="seconds" onchange="return addvideo();" >
+    <button class="il-button" id="addVideo" onclick="return video();" disabled>Add a Video Slide</button>
 </div>
 <div class="new">
     <label for="calendartitle">Calendar Title: </label>
-    <input type="text" id="calendartitle" name="calendartitle">
+    <input type="text" id="calendartitle" name="calendartitle"  onchange="return addcalendar();">
     <label for="calendarid">Calendar ID: </label>
-    <input type="text" id="calendarid" name="calendarid" class="seconds">
-    <button class="il-button" id="addCalendar" onclick="return calendar();">Add a Calendar Slide</button>
+    <input type="text" id="calendarid" name="calendarid" class="seconds"  onchange="return addcalendar();">
+    <button class="il-button" id="addCalendar" onclick="return calendar();" disabled>Add a Calendar Slide</button>
 </div>
 
 @section Scripts
@@ -69,6 +71,7 @@
             document.getElementById('college').innerText = data.college;
             document.getElementById('description').innerText = data.description;
             document.getElementById('twitter').innerText = data.twitter;
+            document.getElementById('signtype').innerText = data.signType;
 
             document.getElementById('ratio').innerText = data.ratio;
             document.getElementById('minimumheight').innerText = data.minimumHeight;
@@ -116,7 +119,17 @@
         });
     }
 
+    function addpicture() {
+        if (document.getElementById('image-upload').files.length > 0) {
+            document.getElementById('addImage').removeAttribute('disabled');
+        } else {
+            document.getElementById('addImage').setAttribute('disabled', true);
+        }
+        return true;
+    }
+
     function picture() {
+        document.getElementById('addImage').setAttribute('disabled', true);
         for (let i = 0; i < document.getElementById('image-upload').files.length; i++) {
             var fd = new FormData();
             var file_data = document.getElementById('image-upload').files[i];
@@ -208,6 +221,15 @@
         });
     }
 
+    function addcalendar() {
+        if (document.getElementById('calendartitle').value != '' && document.getElementById('calendarid').value) {
+            document.getElementById('addCalendar').removeAttribute('disabled');
+        } else {
+            document.getElementById('addCalendar').setAttribute('disabled', true);
+        }
+        return true;
+    }
+
     function calendar() {
         let object = {};
         object['signId'] = document.getElementById('slideId').innerText;
@@ -226,7 +248,16 @@
             });
         });
     }
-    
+
+    function addvideo() {
+        if (document.getElementById('videourl').value != '' && document.getElementById('videoseconds').value) {
+            document.getElementById('addVideo').removeAttribute('disabled');
+        } else {
+            document.getElementById('addVideo').setAttribute('disabled', true);
+        }
+        return true;
+    }
+
     function video() {
         let object = {};
         object['signId'] = document.getElementById('slideId').innerText;

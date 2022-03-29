@@ -19,6 +19,7 @@ namespace DigitalSignEditor.ApiModels {
             MinimumWidth = sign.MinimumWidth + "px";
             MinimumHeight = sign.MinimumHeight + "px";
             Ratio = sign.RatioWidth + ":" + sign.RatioHeight;
+            SignType = sign.SignType.ToString();
             Twitter = string.IsNullOrWhiteSpace(sign.TwitterHandle) ? "None" : sign.TwitterHandle;
             Items = sign.Slides.OrderBy(s => s.Order).ThenBy(s => s.Name).Select(si => new SlideInformation {
                 Name = si.Name,
