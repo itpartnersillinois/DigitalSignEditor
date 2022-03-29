@@ -7,6 +7,12 @@
         margin: 20px auto;
     }
 
+.il-button[disabled], .il-button[disabled]:focus, .il-button[disabled]:hover {
+    background: var(--il-gray-1);
+    color: var(--il-gray-2);
+    border-color: var(--il-gray-2);
+}
+
 .box {
     padding: 30px;
     background: var(--il-cloud);
@@ -27,6 +33,9 @@
 
 .new {
     text-align: right;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: thin solid var(--il-blue);
 }
 
     .new label {
