@@ -85,6 +85,8 @@ namespace DigitalSignEditor {
                 Configuration.GetValue<string>("Twitter:OAuthToken"),
                 Configuration.GetValue<string>("Twitter:OAuthTokenSecret")));
 
+            services.AddScoped<ITwitterCache, TwitterCache>(sp => new TwitterCache(sp.GetRequiredService<ISignRepository>()));
+
             services.AddScoped(sp => new CalendarHelper(WebAccess.GetCalenderJson));
             services.AddScoped(sp => new CalendarIcsHelper(WebAccess.GetCalenderIcs));
             services.AddScoped<IFileCreatorFactory>(sp => new FileCreatorFactory(Configuration.GetValue<string>("Github:Owner"),

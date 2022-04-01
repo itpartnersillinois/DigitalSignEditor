@@ -6,6 +6,7 @@ using DigitalSignEditor.Weather;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace DigitalSignEditor.Api {
 
@@ -15,10 +16,12 @@ namespace DigitalSignEditor.Api {
         private readonly CalendarHelper calendarHelper;
         private readonly CalendarIcsHelper calendarIcsHelper;
         private readonly ISignRepository signRepository;
+        private readonly ITwitterCache twitterCache;
         private readonly TwitterHelper twitterHelper;
         private readonly WeatherHelper weatherHelper;
 
-        public DataController(TwitterHelper twitterHelper, WeatherHelper weatherHelper, CalendarHelper calendarHelper, CalendarIcsHelper calendarIcsHelper, ISignRepository signRepository) {
+        public DataController(ITwitterCache twitterCache, TwitterHelper twitterHelper, WeatherHelper weatherHelper, CalendarHelper calendarHelper, CalendarIcsHelper calendarIcsHelper, ISignRepository signRepository) {
+            this.twitterCache = twitterCache;
             this.twitterHelper = twitterHelper;
             this.weatherHelper = weatherHelper;
             this.calendarHelper = calendarHelper;
@@ -41,9 +44,14 @@ namespace DigitalSignEditor.Api {
         [AllowAnonymous]
         [DisableCors]
         public IActionResult Twitter(string id) {
+            var returnValue = twitterCache.GetCache(id);
+            if (!string.IsNullOrEmpty(returnValue)) {
+                return Content(returnValue);
+            }
             twitterHelper.Update(id);
-            var returnValue = new JsonResult(twitterHelper.Tweets);
-            return returnValue;
+            var jsonResult = new JsonResult(twitterHelper.Tweets);
+            twitterCache.AddCache(id, JsonConvert.SerializeObject(jsonResult.Value));
+            return jsonResult;
         }
 
         [HttpGet("Weather")]
