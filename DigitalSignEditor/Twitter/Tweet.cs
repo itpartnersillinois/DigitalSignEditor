@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using LinqToTwitter;
 
 namespace DigitalSignEditor.Twitter {
@@ -8,8 +9,10 @@ namespace DigitalSignEditor.Twitter {
         public Tweet() {
         }
 
-        public Tweet(Status status) {
+        public Tweet(Status status, string username) {
             Handle = status.User.ScreenNameResponse;
+            IsFromUsername = username.Equals(status.User.ScreenNameResponse ?? "", StringComparison.OrdinalIgnoreCase);
+            IsRetweeted = status.Retweeted;
             Image = status.RetweetedStatus?.Entities?.MediaEntities.FirstOrDefault()?.MediaUrlHttps;
             Text = (status.RetweetedStatus?.FullText ?? status.RetweetedStatus?.Text ?? string.Empty).Trim();
             if (string.IsNullOrWhiteSpace(Image)) {
@@ -20,21 +23,44 @@ namespace DigitalSignEditor.Twitter {
             }
             var quote = (status.QuotedStatus.FullText ?? status.Text ?? string.Empty).Trim();
             if (!string.IsNullOrWhiteSpace(quote)) {
-                Text = this.Text + ": " + quote;
+                Text = Text + ": " + quote;
                 Image = status.QuotedStatus?.Entities?.MediaEntities.FirstOrDefault()?.MediaUrlHttps;
             }
             UserImage = status.User.ProfileImageUrlHttps;
             Username = status.User.Name;
+            Time = GetTweetTime(status.CreatedAt);
         }
 
         public string Handle { get; set; }
 
         public string Image { get; set; }
-
+        public bool IsFromUsername { get; set; }
+        public bool IsRetweeted { get; set; }
         public string Text { get; set; }
-
+        public string Time { get; set; }
         public string UserImage { get; set; }
 
         public string Username { get; set; }
+
+        private string GetTweetTime(DateTime date) {
+            var ts = new TimeSpan(DateTime.UtcNow.Ticks - date.Ticks);
+            if (ts.Minutes < 45) {
+                return ts.Minutes <= 1 ? "recently" : ts.Minutes + " minutes ago";
+            }
+            if (ts.Hours < 24) {
+                return ts.Hours == 1 ? "an hour ago" : ts.Hours + " hours ago";
+            }
+            if (ts.Hours < 48) {
+                return "yesterday";
+            }
+            if (ts.Days < 30) {
+                return ts.Days == 1 ? "yesterday" : ts.Days + " days ago";
+            }
+            if (ts.Days < 365) {
+                var months = Convert.ToInt32(Math.Floor((double) ts.Days / 30));
+                return months <= 1 ? "one month ago" : months + " months ago";
+            }
+            return "over a year old";
+        }
     }
 }
