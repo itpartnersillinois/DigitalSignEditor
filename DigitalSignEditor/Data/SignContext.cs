@@ -15,6 +15,7 @@ namespace DigitalSignEditor.Data {
             Debug.WriteLine($"{id} context created.");
         }
 
+        public DbSet<CacheItem> CacheItems { get; set; }
         public DbSet<CalendarItem> CalendarItems { get; set; }
         public DbSet<SignPermission> SignPermissions { get; set; }
         public DbSet<Sign> Signs { get; set; }
