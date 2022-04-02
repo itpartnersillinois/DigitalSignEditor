@@ -10,6 +10,7 @@ namespace DigitalSignEditor.Twitter {
         }
 
         public Tweet(Status status, string username) {
+            DatePulled = DateTime.Now.ToShortTimeString();
             Handle = status.User.ScreenNameResponse;
             IsFromUsername = username.Equals(status.User.ScreenNameResponse ?? "", StringComparison.OrdinalIgnoreCase);
             IsRetweeted = status.Retweeted;
@@ -26,11 +27,12 @@ namespace DigitalSignEditor.Twitter {
                 Text = Text + ": " + quote;
                 Image = status.QuotedStatus?.Entities?.MediaEntities.FirstOrDefault()?.MediaUrlHttps;
             }
+            Time = GetTweetTime(status.CreatedAt);
             UserImage = status.User.ProfileImageUrlHttps;
             Username = status.User.Name;
-            Time = GetTweetTime(status.CreatedAt);
         }
 
+        public string DatePulled { get; set; }
         public string Handle { get; set; }
 
         public string Image { get; set; }
@@ -44,14 +46,11 @@ namespace DigitalSignEditor.Twitter {
 
         private string GetTweetTime(DateTime date) {
             var ts = new TimeSpan(DateTime.UtcNow.Ticks - date.Ticks);
-            if (ts.Minutes < 45) {
-                return ts.Minutes <= 1 ? "recently" : ts.Minutes + " minutes ago";
+            if (ts.Hours == 0) {
+                return ts.Minutes <= 5 ? "recently" : ts.Minutes + " minutes ago";
             }
-            if (ts.Hours < 24) {
+            if (ts.Days == 0) {
                 return ts.Hours == 1 ? "an hour ago" : ts.Hours + " hours ago";
-            }
-            if (ts.Hours < 48) {
-                return "yesterday";
             }
             if (ts.Days < 30) {
                 return ts.Days == 1 ? "yesterday" : ts.Days + " days ago";
