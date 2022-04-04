@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using DigitalSignEditor.Calendar;
 using DigitalSignEditor.Data;
 using DigitalSignEditor.Twitter;
@@ -46,7 +47,7 @@ namespace DigitalSignEditor.Api {
         public IActionResult Twitter(string id) {
             var returnValue = twitterCache.GetCache(id);
             if (!string.IsNullOrEmpty(returnValue)) {
-                return Content(returnValue, "application/json");
+                return new JsonResult(JsonConvert.DeserializeObject<List<Tweet>>(returnValue));
             }
             twitterHelper.Update(id);
             var jsonResult = new JsonResult(twitterHelper.Tweets);
