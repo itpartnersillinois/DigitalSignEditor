@@ -37,9 +37,10 @@ namespace DigitalSignEditor.Twitter {
 
             using (var twitterCtx = new TwitterContext(auth)) {
                 var tweets = twitterCtx.Status.Where(x => x.Type == StatusType.User && x.ScreenName == username && x.TweetMode == TweetMode.Extended).ToList();
+                var correctUsername = tweets.Any() ? tweets.First().User?.ScreenNameResponse : username;
                 var tweetsByMentions = twitterCtx.Status.Where(x => x.Type == StatusType.Mentions && x.TweetMode == TweetMode.Extended).ToList();
                 var tweetsBySearch = twitterCtx.Search.Single(x => x.Type == SearchType.Search && x.TweetMode == TweetMode.Extended && x.Query == "\"@" + username + "\"").Statuses;
-                Tweets = tweets.Union(tweetsBySearch, new TweetComparer()).Union(tweetsByMentions, new TweetComparer()).Distinct(new TweetComparer()).OrderByDescending(s => s.CreatedAt).Take(numberOfTweets * 5).Select(tweet => new Tweet(tweet, username)).Distinct(new TweetItemComparer()).Take(numberOfTweets).ToList();
+                Tweets = tweets.Union(tweetsBySearch, new TweetComparer()).Union(tweetsByMentions, new TweetComparer()).Distinct(new TweetComparer()).OrderByDescending(s => s.CreatedAt).Take(numberOfTweets * 5).Select(tweet => new Tweet(tweet, correctUsername)).Distinct(new TweetItemComparer()).Take(numberOfTweets).ToList();
                 IsSuccessful = true;
             }
         }
