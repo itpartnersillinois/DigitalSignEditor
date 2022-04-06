@@ -14,11 +14,14 @@ namespace DigitalSignEditor.Twitter {
         }
 
         public bool AddCache(string username, string data) {
-            var cacheItem = signRepository.Read(sr => sr.CacheItems.FirstOrDefault(c => c.Name == prefix + username));
+            var cacheItem = signRepository.Read(sr => sr.CacheItems.OrderByDescending(c => c.LastUpdated).FirstOrDefault(c => c.Name == prefix + username));
             if (cacheItem != null) {
                 cacheItem.Data = data;
                 cacheItem.LastUpdated = DateTime.Now;
                 _ = signRepository.Update(cacheItem);
+                foreach (var altCacheItem in signRepository.Read(sr => sr.CacheItems.Where(c => c.Name == prefix + username && c.Id != cacheItem.Id)).ToList()) {
+                    _ = signRepository.Delete(altCacheItem);
+                }
                 return false;
             } else {
                 _ = signRepository.Create(new CacheItem {
@@ -33,7 +36,7 @@ namespace DigitalSignEditor.Twitter {
         }
 
         public string GetCache(string username) {
-            var cacheItem = signRepository.Read(sr => sr.CacheItems.FirstOrDefault(c => c.Name == prefix + username));
+            var cacheItem = signRepository.Read(sr => sr.CacheItems.OrderByDescending(c => c.LastUpdated).FirstOrDefault(c => c.Name == prefix + username));
             return cacheItem != null && cacheItem.LastUpdated.AddMinutes(cacheItem.MinutesUntilCacheExpires) > DateTime.Now ? cacheItem.Data : string.Empty;
         }
     }
