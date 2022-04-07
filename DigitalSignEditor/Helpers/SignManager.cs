@@ -12,19 +12,19 @@ namespace DigitalSignEditor.Helpers {
 
     public static class SignManager {
 
-        public static string Transfer(ISignRepository signRepository, IFileCreatorFactory fileCreatorFactory) {
-            var returnValue = TransferSlides(signRepository, fileCreatorFactory);
-            DeleteSlides(signRepository);
+        public static int DeleteSlides(ISignRepository signRepository) {
+            var slides = signRepository.Read(s => s.Slides).Where(slide => slide.EndDate < DateTime.Today).ToList();
+            var returnValue = slides.Count;
+            if (slides.Any()) {
+                ChangedHelper.SignChanged(signRepository);
+                foreach (var slide in slides) {
+                    _ = signRepository.Delete(slide);
+                }
+            }
             return returnValue;
         }
 
-        private static void DeleteSlides(ISignRepository signRepository) {
-            foreach (var slide in signRepository.Read(s => s.Slides).Where(slide => slide.EndDate < DateTime.Today).ToList()) {
-                _ = signRepository.Delete(slide);
-            }
-        }
-
-        private static string TransferSlides(ISignRepository signRepository, IFileCreatorFactory fileCreatorFactory) {
+        public static string TransferSlides(ISignRepository signRepository, IFileCreatorFactory fileCreatorFactory) {
             var returnValue = new StringBuilder();
             foreach (SignType signType in Enum.GetValues(typeof(SignType))) {
                 var signs = signRepository.Read(sr => sr.Signs.Include(s => s.Slides).Where(s => s.SignType == signType).ToList());

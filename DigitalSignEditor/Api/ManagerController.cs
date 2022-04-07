@@ -20,10 +20,18 @@ namespace DigitalSignEditor.Api {
             this.fileCreatorFactory = fileCreatorFactory;
         }
 
+        [HttpGet("Clean")]
+        public string CleanSigns() {
+            return SignManager.DeleteSlides(signRepository).ToString();
+        }
+
         [HttpGet("Transfer")]
         public string TransferSigns() {
+            if (!ChangedHelper.HasSignChanged(signRepository)) {
+                return "skipped";
+            }
             Task.Run(() => {
-                Console.WriteLine(SignManager.Transfer(signRepository, fileCreatorFactory));
+                Console.WriteLine(SignManager.TransferSlides(signRepository, fileCreatorFactory));
             }).Forget();
             return "";
         }
