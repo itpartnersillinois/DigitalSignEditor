@@ -17,6 +17,7 @@ namespace DigitalSignEditor.Data {
 
         public DbSet<CacheItem> CacheItems { get; set; }
         public DbSet<CalendarItem> CalendarItems { get; set; }
+        public DbSet<ChangeIndicator> ChangeIndicators { get; set; }
         public DbSet<SignPermission> SignPermissions { get; set; }
         public DbSet<Sign> Signs { get; set; }
         public DbSet<Slide> Slides { get; set; }
