@@ -27,6 +27,7 @@ namespace DigitalSignEditor.Api {
             if (!securityHelper.CanAccess(User, signId)) {
                 return default;
             }
+            ChangedHelper.SignChanged(signRepository);
             var totalItems = await signRepository.ReadAsync(rep => rep.Slides.Count(s => s.SignId == signId));
             return await signRepository.CreateAsync(new Slide {
                 IsActive = true,
@@ -46,6 +47,7 @@ namespace DigitalSignEditor.Api {
             if (signId == null || !securityHelper.CanAccess(User, signId.Value)) {
                 return default;
             }
+            ChangedHelper.SignChanged(signRepository);
             // need to reset order to ensure everything is in numerical order with no gaps
             int tempOrder = default;
             Slide sign = default;
@@ -78,6 +80,7 @@ namespace DigitalSignEditor.Api {
             if (sign == null || !securityHelper.CanAccess(User, sign.SignId)) {
                 return default;
             }
+            ChangedHelper.SignChanged(signRepository);
             var order = sign.Order;
             var signId = sign.SignId;
             await signRepository.DeleteAsync(sign);
@@ -97,6 +100,7 @@ namespace DigitalSignEditor.Api {
             if (sign == null || !securityHelper.CanAccess(User, sign.SignId)) {
                 return default;
             }
+            ChangedHelper.SignChanged(signRepository);
             sign.LastUpdated = DateTime.Now;
             sign.Name = jsonObject.name;
             sign.Description = jsonObject.description;
