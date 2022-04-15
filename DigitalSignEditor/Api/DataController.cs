@@ -49,7 +49,9 @@ namespace DigitalSignEditor.Api {
             if (!string.IsNullOrEmpty(returnValue)) {
                 return new JsonResult(JsonConvert.DeserializeObject<List<Tweet>>(returnValue));
             }
-            twitterHelper.Update(id);
+            if (!twitterHelper.Update(id)) {
+                return new JsonResult(new List<Tweet>());
+            }
             var jsonResult = new JsonResult(twitterHelper.Tweets);
             twitterCache.AddCache(id, JsonConvert.SerializeObject(jsonResult.Value));
             return jsonResult;
