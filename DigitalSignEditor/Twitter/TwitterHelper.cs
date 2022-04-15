@@ -21,28 +21,52 @@ namespace DigitalSignEditor.Twitter {
             this.oathTokenSecret = oathTokenSecret;
         }
 
-        public bool IsSuccessful { get; set; }
-
         public List<Tweet> Tweets { get; set; }
 
-        public virtual void Update(string username) {
-            var auth = new SingleUserAuthorizer {
-                CredentialStore = new SingleUserInMemoryCredentialStore {
-                    ConsumerKey = consumerKey,
-                    ConsumerSecret = consumerSecret,
-                    OAuthToken = oathToken,
-                    OAuthTokenSecret = oathTokenSecret
+        public bool Update(string username) {
+            if (!string.IsNullOrEmpty(username)) {
+                if (username.Equals("education-convocation")) {
+                    return Convocation();
                 }
-            };
-
-            using (var twitterCtx = new TwitterContext(auth)) {
-                var tweets = twitterCtx.Status.Where(x => x.Type == StatusType.User && x.ScreenName == username && x.TweetMode == TweetMode.Extended).ToList();
-                var correctUsername = tweets.Any() ? tweets.First().User?.ScreenNameResponse : username;
-                var tweetsByMentions = twitterCtx.Status.Where(x => x.Type == StatusType.Mentions && x.TweetMode == TweetMode.Extended).ToList();
-                var tweetsBySearch = twitterCtx.Search.Single(x => x.Type == SearchType.Search && x.TweetMode == TweetMode.Extended && x.Query == "\"@" + username + "\"").Statuses;
-                Tweets = tweets.Union(tweetsBySearch, new TweetComparer()).Union(tweetsByMentions, new TweetComparer()).Distinct(new TweetComparer()).OrderByDescending(s => s.CreatedAt).Take(numberOfTweets * 5).Select(tweet => new Tweet(tweet, correctUsername)).Distinct(new TweetItemComparer()).Take(numberOfTweets).ToList();
-                IsSuccessful = true;
+                return Username(username);
             }
+            return false;
+        }
+
+        private bool Convocation() {
+            var auth = GenerateUser();
+            var username = "edILLINOIS";
+            var topic = "illinois2022";
+
+            using var twitterCtx = new TwitterContext(auth);
+            var tweets = twitterCtx.Status.Where(x => x.Type == StatusType.User && x.ScreenName == username && x.TweetMode == TweetMode.Extended).ToList();
+            var correctUsername = tweets.Any() ? tweets.First().User?.ScreenNameResponse : username;
+            var tweetsByMentions = twitterCtx.Status.Where(x => x.Type == StatusType.Mentions && x.TweetMode == TweetMode.Extended).ToList();
+            var tweetsBySearch = twitterCtx.Search.Single(x => x.Type == SearchType.Search && x.TweetMode == TweetMode.Extended && x.Query == "\"@" + username + "\"").Statuses.ToList();
+            var convocationSearch = twitterCtx.Search.Single(x => x.Type == SearchType.Search && x.TweetMode == TweetMode.Extended && x.Query == "\"#" + topic + "\"").Statuses.ToList();
+            Tweets = convocationSearch.Union(tweets, new TweetComparer()).Union(tweetsBySearch, new TweetComparer()).Union(tweetsByMentions, new TweetComparer()).Distinct(new TweetComparer()).OrderByDescending(s => s.CreatedAt).Take(numberOfTweets * 5).Select(tweet => new Tweet(tweet, correctUsername)).Distinct(new TweetItemComparer()).Take(numberOfTweets).ToList();
+            return true;
+        }
+
+        private SingleUserAuthorizer GenerateUser() => new SingleUserAuthorizer {
+            CredentialStore = new SingleUserInMemoryCredentialStore {
+                ConsumerKey = consumerKey,
+                ConsumerSecret = consumerSecret,
+                OAuthToken = oathToken,
+                OAuthTokenSecret = oathTokenSecret
+            }
+        };
+
+        private bool Username(string username) {
+            var auth = GenerateUser();
+
+            using var twitterCtx = new TwitterContext(auth);
+            var tweets = twitterCtx.Status.Where(x => x.Type == StatusType.User && x.ScreenName == username && x.TweetMode == TweetMode.Extended).ToList();
+            var correctUsername = tweets.Any() ? tweets.First().User?.ScreenNameResponse : username;
+            var tweetsByMentions = twitterCtx.Status.Where(x => x.Type == StatusType.Mentions && x.TweetMode == TweetMode.Extended).ToList();
+            var tweetsBySearch = twitterCtx.Search.Single(x => x.Type == SearchType.Search && x.TweetMode == TweetMode.Extended && x.Query == "\"@" + username + "\"").Statuses;
+            Tweets = tweets.Union(tweetsBySearch, new TweetComparer()).Union(tweetsByMentions, new TweetComparer()).Distinct(new TweetComparer()).OrderByDescending(s => s.CreatedAt).Take(numberOfTweets * 5).Select(tweet => new Tweet(tweet, correctUsername)).Distinct(new TweetItemComparer()).Take(numberOfTweets).ToList();
+            return true;
         }
 
         private class TweetComparer : IEqualityComparer<Status> {
