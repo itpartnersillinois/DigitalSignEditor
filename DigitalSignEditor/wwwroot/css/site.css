@@ -70,6 +70,10 @@
             flex: 0 0 100px;
         }
 
+        .il-formatted #slides li div.flex div.small {
+            flex: 0 0 20px;
+        }
+
 .il-formatted #slides li div.description {
     width: 100%;
 }
@@ -92,7 +96,7 @@
 }
 
     .il-formatted #slides input.date {
-        width: 100px;
+        width: 200px;
     }
 
 .il-formatted #slides .il-button {

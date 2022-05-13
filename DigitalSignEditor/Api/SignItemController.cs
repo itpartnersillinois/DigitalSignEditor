@@ -27,7 +27,8 @@ namespace DigitalSignEditor.Api {
             if (!securityHelper.CanAccess(User, signId)) {
                 return default;
             }
-            ChangedHelper.SignChanged(signRepository);
+            ChangedHelper.SignChanged(signRepository, null, null);
+            ChangedHelper.UpdateSignLastUpdated(signRepository, signId);
             var totalItems = await signRepository.ReadAsync(rep => rep.Slides.Count(s => s.SignId == signId));
             return await signRepository.CreateAsync(new Slide {
                 IsActive = true,
@@ -47,7 +48,8 @@ namespace DigitalSignEditor.Api {
             if (signId == null || !securityHelper.CanAccess(User, signId.Value)) {
                 return default;
             }
-            ChangedHelper.SignChanged(signRepository);
+            ChangedHelper.SignChanged(signRepository, null, null);
+            ChangedHelper.UpdateSignLastUpdated(signRepository, signId.Value);
             // need to reset order to ensure everything is in numerical order with no gaps
             int tempOrder = default;
             Slide sign = default;
@@ -80,7 +82,8 @@ namespace DigitalSignEditor.Api {
             if (sign == null || !securityHelper.CanAccess(User, sign.SignId)) {
                 return default;
             }
-            ChangedHelper.SignChanged(signRepository);
+            ChangedHelper.SignChanged(signRepository, null, null);
+            ChangedHelper.UpdateSignLastUpdated(signRepository, sign.SignId);
             var order = sign.Order;
             var signId = sign.SignId;
             await signRepository.DeleteAsync(sign);
@@ -100,12 +103,16 @@ namespace DigitalSignEditor.Api {
             if (sign == null || !securityHelper.CanAccess(User, sign.SignId)) {
                 return default;
             }
-            ChangedHelper.SignChanged(signRepository);
+            var startDate = TextHelper.ConvertDate(jsonObject.startDate.ToString());
+            var endDate = TextHelper.ConvertDate(jsonObject.endDate.ToString());
+            ChangedHelper.SignChanged(signRepository, startDate, endDate);
+            ChangedHelper.UpdateSignLastUpdated(signRepository, sign.SignId);
             sign.LastUpdated = DateTime.Now;
             sign.Name = jsonObject.name;
             sign.Description = jsonObject.description;
-            sign.EndDate = TextHelper.ConvertDate(jsonObject.endDate.ToString());
-            sign.StartDate = TextHelper.ConvertDate(jsonObject.startDate.ToString());
+            sign.IsActive = jsonObject.isActive;
+            sign.EndDate = endDate;
+            sign.StartDate = startDate;
             return await signRepository.UpdateAsync(sign);
         }
     }

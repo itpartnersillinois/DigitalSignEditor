@@ -13,10 +13,10 @@ namespace DigitalSignEditor.Helpers {
     public static class SignManager {
 
         public static int DeleteSlides(ISignRepository signRepository) {
-            var slides = signRepository.Read(s => s.Slides).Where(slide => slide.EndDate < DateTime.Today).ToList();
+            var slides = signRepository.Read(s => s.Slides).Where(slide => slide.EndDate < DateTime.Now && slide.IsActive).ToList();
             var returnValue = slides.Count;
             if (slides.Any()) {
-                ChangedHelper.SignChanged(signRepository);
+                ChangedHelper.SignChanged(signRepository, null, null);
                 foreach (var slide in slides) {
                     _ = signRepository.Delete(slide);
                 }

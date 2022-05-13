@@ -12,9 +12,8 @@
     </div>
     <div class="column">
         <h2>Transfer Changes</h2>
-        <p>The digital sign processor pulls changes daily.<br /> You can trigger this manually using the button below.</p>
-        <p><button class="il-button il-theme-orange" id="save" onclick="return save();">Transfer Changes</button></p>
-        <p id="message" style="display: none;">The request has been queued. This process can take a few minutes to run, and then pages will be refreshed.</p>
+        <p>The digital sign processor pulls changes hourly.</p>
+        <p>Contact IT Partners if you need something triggered immediately.</p>
     </div>
 </div>
 </div>
@@ -47,20 +46,5 @@
             });
         });
     }
-
-    function save() {
-        fetch('/Api/Manager/Transfer', {
-            method: 'GET',
-            headers: {
-                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
-            }
-        }).then(res => {
-            let save = document.getElementById('save');
-            let message = document.getElementById('message');
-            save.style.display = 'none';
-            message.style.display = '';
-        });
-    }
-
 </script>
 }

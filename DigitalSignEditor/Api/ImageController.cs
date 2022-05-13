@@ -35,7 +35,8 @@ namespace DigitalSignEditor.Api {
             if (!imageCheckAction(fileBytes, sign.MinimumWidth, sign.MinimumHeight, sign.RatioWidth, sign.RatioHeight)) {
                 return default;
             }
-            ChangedHelper.SignChanged(signRepository);
+            ChangedHelper.SignChanged(signRepository, null, null);
+            ChangedHelper.UpdateSignLastUpdated(signRepository, sign.Id);
             var storage = new StorageItem(file.FileName, fileBytes);
             await signRepository.CreateAsync(storage);
             var totalItems = await signRepository.ReadAsync(rep => rep.Slides.Count(s => s.SignId == sign.Id));

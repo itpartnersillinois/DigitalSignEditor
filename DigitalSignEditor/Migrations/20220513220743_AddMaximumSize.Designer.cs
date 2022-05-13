@@ -4,14 +4,16 @@ using DigitalSignEditor.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DigitalSignEditor.Migrations
 {
     [DbContext(typeof(SignContext))]
-    partial class SignContextModelSnapshot : ModelSnapshot
+    [Migration("20220513220743_AddMaximumSize")]
+    partial class AddMaximumSize
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

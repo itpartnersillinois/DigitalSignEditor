@@ -5,6 +5,7 @@
         public string Description { get; set; }
         public string EndDate { get; set; }
         public int Id { get; set; }
+        public bool IsActive { get; set; }
         public string Name { get; set; }
         public int Order { get; set; }
         public int SignOption { get; set; }

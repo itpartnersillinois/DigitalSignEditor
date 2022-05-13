@@ -9,7 +9,9 @@ namespace DigitalSignEditor.GithubModels {
     public class GithubSign {
 
         public GithubSign(Sign sign) {
-            var slides = sign.Slides == null ? new List<Slide>() : sign.Slides.Where(s => s.IsActive && (s.StartDate == null || s.StartDate >= DateTime.Today) && (s.EndDate == null || s.EndDate <= DateTime.Today));
+            var slides = sign.Slides == null ? new List<Slide>() :
+                sign.Slides.Where(s => s.IsActive && (s.StartDate == null || s.StartDate >= DateTime.Today) && (s.EndDate == null || s.EndDate <= DateTime.Today))
+                    .OrderBy(s => s.Order).ToList();
             Url = sign.Url ?? "";
             Title = sign.Name ?? "";
             Twitter = sign.TwitterHandle ?? "";
