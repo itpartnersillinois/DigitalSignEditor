@@ -7,6 +7,7 @@
 <h2><span id="name"></span></h2>
     <div class="two-column">
         <div class="column">
+            <p>Last Updated: <span id="lastupdated"></span></p>
             <p>College: <span id="college"></span></p>
             <p>Description: <span id="description"></span></p>
             <p>Twitter Feed: <span id="twitter"></span></p>
@@ -16,6 +17,7 @@
         <div class="column">
             <p>Minimum Height for Images: <span id="minimumheight"></span></p>
             <p>Minimum Width for Images: <span id="minimumwidth"></span></p>
+            <p>Maximum File Size: <span id="maximumsize"></span></p>
             <p>Image Ratio: <span id="ratio"></span></p>
             <p>Note that images that do not meet these requirements will not be accepted. If an image is not getting uploaded, confirm it meets the minimum size and aspect ratio.</p>
         </div>
@@ -29,9 +31,10 @@
 <h2>Add New Slides</h2>
 <div class="new">
     <label for="image-upload" class="hidden">Choose an image to upload</label>
-<input type="file" id="image-upload" name="image-upload" multiple accept="image/*" onchange="return addpicture();" >
-<button class="il-button" id="addImage" onclick="return picture();" disabled>Add an Image Slide</button>
+    <input type="file" id="image-upload" name="image-upload" multiple accept="image/*" onchange="return addpicture();" >
+    <button class="il-button" id="addImage" onclick="return picture();" disabled>Add an Image Slide</button>
 </div>
+<div id="image-error"></div>
 <div class="new">
 <button class="il-button" id="addWeather" onclick="return weather();">Add a Weather Slide</button>
 </div>
@@ -72,10 +75,11 @@
             document.getElementById('description').innerText = data.description;
             document.getElementById('twitter').innerText = data.twitter;
             document.getElementById('signtype').innerText = data.signType;
-
+            document.getElementById('lastupdated').innerText = data.lastUpdated;
             document.getElementById('ratio').innerText = data.ratio;
             document.getElementById('minimumheight').innerText = data.minimumHeight;
             document.getElementById('minimumwidth').innerText = data.minimumWidth;
+            document.getElementById('maximumsize').innerText = data.maximumSize;
             let slides = document.getElementById('slides');
             slides.innerHTML = '';
             data.items.forEach(element => {
@@ -83,14 +87,10 @@
                 const divFlex = document.createElement('div');
                 divFlex.className = 'flex';
                 const divName = document.createElement('div');
-                const divDescription = document.createElement('div');
-                divDescription.className = 'description';
+                divName.innerHTML = `<label for='name${element.id}' class='hidden'>Name </label><input id='name${element.id}' value='${element.name}' />`;
+                divName.innerHTML += `<br /><label for='isactive${element.id}'>Is Active? </label><input id='isactive${element.id}' type='checkbox'' value='true' ${element.isActive ? 'checked' : ''}/>`
                 const divData = document.createElement('div');
                 divData.className = 'data';
-                const divDates = document.createElement('div');
-                const divButtons = document.createElement('div');
-                divName.innerHTML = `<label for='name${element.id}' class='hidden'>Name </label><input id='name${element.id}' value='${element.name}' />`
-                divDescription.innerHTML = `<label for='description${element.id}' class='hidden'>Description </label><input id='description${element.id}' value='${element.description}' />`
                 if (element.signOption == 0) {
                     divData.innerHTML = `<a href="${element.url}" target="_blank"><img src="${element.url}" alt=""></a>`
                 }
@@ -103,8 +103,9 @@
                 if (element.signOption == 3) {
                     divData.innerHTML = `Calendar`
                 }
-
-                divDates.innerHTML = `<label for='from${element.id}'>From </label><input id='from${element.id}' value='${element.startDate}' class='date' /> <label for='to{element.id}'>to</label> <input id='to${element.id}' value='${element.endDate}' class='date' />`
+                const divDates = document.createElement('div');
+                divDates.innerHTML = `<label for='from${element.id}'>From </label><input id='from${element.id}' value='${element.startDate}' class='date' /> <br /><label for='to{element.id}'>To</label> <input id='to${element.id}' value='${element.endDate}' class='date' />`
+                const divButtons = document.createElement('div');
                 divButtons.innerHTML = `<button class='il-button narrow' onclick='return edit(${element.id});'>Save</button> <button class='il-button narrow' onclick='return moveup(${element.id});'><div class="il-icon rotate">back</div></button> <button class='il-button narrow' onclick='return movedown(${element.id});'><div class="il-icon rotate">next</div></button> <button class='il-button narrow' onclick='return remove(${element.id});'>Remove</button>`
 
                 divFlex.appendChild(divName);
@@ -113,6 +114,9 @@
                 divFlex.appendChild(divButtons);
 
                 li.appendChild(divFlex);
+                const divDescription = document.createElement('div');
+                divDescription.innerHTML = `<label for='description${element.id}' class='hidden'>Description </label><input id='description${element.id}' value='${element.description}' />`
+                divDescription.className = 'description';
                 li.appendChild(divDescription);
                 slides.appendChild(li);
             });
@@ -143,6 +147,7 @@
                     if (text.startsWith("Error")) {
                         document.getElementById('image-error').innerHTML = text;
                     } else {
+                        document.getElementById('image-error').innerHTML = '';
                         loadItems();
                     }
                 });
@@ -157,6 +162,7 @@
         object['startDate'] = document.getElementById('from' + id).value;
         object['endDate'] = document.getElementById('to' + id).value;
         object['description'] = document.getElementById('description' + id).value;
+        object['isActive'] = document.getElementById('isactive' + id).checked;
         var json = JSON.stringify(object);
 
         fetch('/Api/SignItem/Update', {

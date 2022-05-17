@@ -1,0 +1,159 @@
+﻿@page
+@model DigitalSignEditor.Pages.PropertiesModel
+@{
+}
+<h1>Sign Properties</h1>
+<div id="edit-properties">
+    <p><label for="name">Name:</label> <input type="text" id="name" /></p>
+    <p><label for="description">Description:</label> <input type="text" id="description" /></p>
+    <p><label for="twitter">Twitter Feed:</label> <input type="text" id="twitter" /></p>
+    <p><label for="minimumwidth">Minimum Width for Images:</label> <input type="text" id="minimumwidth" /></p>
+    <p><label for="minimumheight">Minimum Height for Images:</label> <input type="text" id="minimumheight" /></p>
+    <p><label for="maximumsize">Maximum File Size (in KB):</label> <input type="text" id="maximumsize" /></p>
+    <p><label for="ratio">Image Ratio:</label> <input type="text" id="ratio" /></p>
+</div>
+
+<span id="slideId" style="display: none;"></span>
+<button class="il-button" id="update" onclick="return update();">Update Information</button>
+<span id="update-alert" class="alert hide">Sign Updated</span>
+
+<div class="box">
+    <h2>Fixed items</h2>
+    <p>Last Updated: <span id="lastupdated"></span></p>
+    <p>College: <span id="college"></span></p>
+    <p>Sign Type: <span id="signtype"></span></p>
+    <p>Url: <a href='' target='_blank' id="url"></a></p>
+    <p>To update this, please contact IT Partners</p>
+</div>
+
+<h2>Permissions</h2>
+<ul id="permissions"></ul>
+<p><label for="newpermission">New Email:</label> <input type="text" id="newpermission" /></p>
+<button class="il-button" id="update" onclick="return addnewuser();">Add New User</button>
+<span id="user-alert" class="alert hide">Permission Added</span>
+
+@section Scripts
+{
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function (event) {
+        loadItems();
+    });
+
+    function loadItems() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        fetch('/Api/Sign/Get/' + id, {
+            method: 'GET',
+            headers: {
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+            }
+        }).then(res => res.json()).then(data => {
+            document.getElementById('slideId').innerText = id;
+            document.getElementById('college').innerText = data.college;
+            document.getElementById('signtype').innerText = data.signType;
+            document.getElementById('lastupdated').innerText = data.lastUpdated;
+            document.getElementById('url').innerText = data.url;
+            document.getElementById('url').setAttribute('href', 'https://digitalsign2.education.illinois.edu/' + data.url + '/index.html');
+
+            document.getElementById('name').value = data.name;
+            document.getElementById('description').value = data.description;
+            document.getElementById('twitter').value = data.twitter;
+            document.getElementById('ratio').value = data.ratio;
+            document.getElementById('minimumheight').value = data.minimumHeight;
+            document.getElementById('minimumwidth').value = data.minimumWidth;
+            document.getElementById('maximumsize').value = data.maximumSize;
+        });
+        fetch('/Api/Security/Get/' + id, {
+            method: 'GET',
+            headers: {
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+            }
+        }).then(res => res.json()).then(data => {
+            const permissionList = document.getElementById('permissions');
+            permissionList.innerHTML = '';
+            data.forEach(name => {
+                let li = document.createElement('li');
+                let span = document.createElement('span');
+                let button = document.createElement('button');
+                span.innerHTML = name;
+                button.classList.add('il-button');
+                button.innerHTML = 'Remove ' + name;
+                button.onclick = removePermissions;
+                button.setAttribute('data-name', name);
+                li.appendChild(span);
+                li.appendChild(button);
+                permissionList.appendChild(li);
+            });
+
+        });
+    }
+
+    function removePermissions() {
+        if (confirm("Are you sure you want to remove this user?")) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            let object = {};
+            object['id'] = id;
+            object['name'] = this.getAttribute('data-name');
+            var json = JSON.stringify(object);
+
+            fetch('/Api/Security/Delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: json
+            }).then(function (response) {
+                loadItems();
+            });
+        }
+    }
+
+    function update() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        let object = {};
+        object['id'] = id;
+        object['name'] = document.getElementById('name').value;
+        object['description'] = document.getElementById('description').value;
+        object['twitter'] = document.getElementById('twitter').value;
+        object['ratio'] = document.getElementById('ratio').value;
+        object['minimumheight'] = document.getElementById('minimumheight').value;
+        object['minimumwidth'] = document.getElementById('minimumwidth').value;
+        object['maximumsize'] = document.getElementById('maximumsize').value;
+        var json = JSON.stringify(object);
+
+        fetch('/Api/Sign/Update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: json
+        }).then(function (response) {
+            var alertItem = document.querySelector('#update-alert');
+            alertItem.classList.remove('hide');
+            alertItem.classList.remove('fadeout');
+            setInterval(function () { alertItem.classList.add('fadeout'); }, 2000);
+            loadItems();
+        });
+    }
+
+    function addnewuser() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        let object = {};
+        object['id'] = id;
+        object['name'] = document.getElementById('newpermission').value;
+        var json = JSON.stringify(object);
+
+        fetch('/Api/Security/Add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: json
+        }).then(function (response) {
+            var alertItem = document.querySelector('#user-alert');
+            alertItem.classList.remove('hide');
+            alertItem.classList.remove('fadeout');
+            setInterval(function () { alertItem.classList.add('fadeout'); }, 2000);
+            loadItems();
+        });
+
+    }
+</script>
+}

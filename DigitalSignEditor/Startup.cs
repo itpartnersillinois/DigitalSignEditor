@@ -94,7 +94,7 @@ namespace DigitalSignEditor {
                 Configuration.GetValue<string>("Github:Token"),
                 Configuration.GetValue<string>("DigitalSignUrl"),
                 ImageHelper.Resize));
-            services.AddScoped<Func<byte[], int, int, int, int, bool>>(sp => ImageHelper.IsImageValid);
+            services.AddScoped<Func<byte[], int, int, int, int, int, string>>(sp => ImageHelper.IsImageValid);
         }
     }
 }

@@ -6,6 +6,8 @@ namespace DigitalSignEditor.Data.Models {
         public CollegeType College { get; set; }
         public string Data { get; set; }
         public string Description { get; set; }
+
+        public int MaximumSize { get; set; }
         public int MinimumHeight { get; set; }
         public int MinimumWidth { get; set; }
         public int RatioHeight { get; set; }

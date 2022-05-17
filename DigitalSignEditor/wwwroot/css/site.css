@@ -70,6 +70,10 @@
             flex: 0 0 100px;
         }
 
+        .il-formatted #slides li div.flex div.small {
+            flex: 0 0 20px;
+        }
+
 .il-formatted #slides li div.description {
     width: 100%;
 }
@@ -92,7 +96,7 @@
 }
 
     .il-formatted #slides input.date {
-        width: 100px;
+        width: 200px;
     }
 
 .il-formatted #slides .il-button {
@@ -132,3 +136,42 @@
     #image-upload:before {
         content: "Drag files here or ";
     }
+
+.il-formatted #edit-properties {
+    margin: 20px 0;
+}
+
+    .il-formatted #edit-properties input {
+        width: 500px;
+        margin-left: 20px;
+        padding: 10px;
+        border-top: thin solid var(--il-cloud-2);
+        border-left: thin solid var(--il-cloud-2);
+        border-right: thin solid var(--il-cloud-2);
+    }
+
+    .il-formatted #edit-properties label {
+        min-width: 250px;
+        display: inline-block;
+        text-align: right;
+    }
+
+.il-formatted #permissions button {
+    margin-left: 20px;
+}
+
+.fadeout {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s 2s, opacity 2s linear;
+}
+
+.hide, .il-button.hide {
+    display: none;
+}
+
+.alert {
+    color: red;
+    font-weight: bold;
+    padding: 0 5px;
+}
