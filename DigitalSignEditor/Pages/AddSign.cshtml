@@ -1,0 +1,45 @@
+﻿@page
+@model DigitalSignEditor.Pages.AddSignModel
+@{
+}
+
+<h1>Add Sign</h1>
+<div id="edit-properties">
+    <p><label for="signtype">Sign Type ID:</label> <input type="text" id="signtype" /></p>
+    <p><label for="college">College ID:</label> <input type="text" id="college" /></p>
+    <p><label for="name">Name:</label> <input type="text" id="name" /></p>
+    <p><label for="description">Description:</label> <input type="text" id="description" /></p>
+    <p><label for="url">Url:</label> <input type="text" id="url" /></p>
+</div>
+
+<button class="il-button" id="update" onclick="return update();">Update Information</button>
+
+<div class="box">
+    <h2>SignType</h2>
+    <p>Lobby, Simple, SimpleWithTitle</p>
+    <h2>College Type</h2>
+    <p>College_of_Education, Gies_College_of_Business, College_of_Education_CRC</p>
+</div>
+
+@section Scripts
+{
+<script type="text/javascript">
+    function update() {
+        let object = {};
+        object['name'] = document.getElementById('name').value;
+        object['description'] = document.getElementById('description').value;
+        object['url'] = document.getElementById('url').value;
+        object['signtype'] = document.getElementById('signtype').value;
+        object['college'] = document.getElementById('college').value;
+        var json = JSON.stringify(object);
+
+        fetch('/Api/Sign/Add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: json
+        }).then(res => res.json()).then(data => {
+            window.location.href = '/properties?id=' + data;
+        });
+    }
+</script>
+}

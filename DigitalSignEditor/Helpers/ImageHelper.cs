@@ -8,17 +8,21 @@ namespace DigitalSignEditor.Helpers {
     public static class ImageHelper {
         private const int resizedWidth = 800;
 
-        public static bool IsImageValid(byte[] byteArray, int minimumWidth, int minimumHeight, int aspectWidth, int aspectHeight) {
+        public static string IsImageValid(byte[] byteArray, int size, int minimumWidth, int minimumHeight, int aspectWidth, int aspectHeight) {
+            if (size > 0 && byteArray.Length / 1024 > size) {
+                return "Error: Image is larger than maximum size";
+            }
             var image = Image.Identify(byteArray);
             if (image == null) {
-                return false;
+                return "Error: Image cannot be identified";
             }
-            if (image.Width < minimumWidth || image.Height < minimumHeight) {
-                return false;
+            if (image.Width < minimumWidth) {
+                return "Error: Image does not meet minimum width";
             }
-            double actualRatio = image.Width / image.Height;
-            double expectedRatio = aspectWidth / aspectHeight;
-            return Math.Round(actualRatio, 2) == Math.Round(expectedRatio, 2);
+            if (image.Height < minimumHeight) {
+                return "Error: Image does not meet minimum height";
+            }
+            return GetRatio(image.Width, image.Height) == GetRatio(aspectWidth, aspectHeight) ? "" : "Error: Image is not correct dimensions";
         }
 
         public static byte[] Resize(byte[] byteArray) {
@@ -29,5 +33,7 @@ namespace DigitalSignEditor.Helpers {
             image.Save(ms, format);
             return ms.ToArray();
         }
+
+        private static decimal GetRatio(int width, int height) => Math.Round(decimal.Divide(width, height), 2);
     }
 }
