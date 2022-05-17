@@ -31,9 +31,10 @@
 <h2>Add New Slides</h2>
 <div class="new">
     <label for="image-upload" class="hidden">Choose an image to upload</label>
-<input type="file" id="image-upload" name="image-upload" multiple accept="image/*" onchange="return addpicture();" >
-<button class="il-button" id="addImage" onclick="return picture();" disabled>Add an Image Slide</button>
+    <input type="file" id="image-upload" name="image-upload" multiple accept="image/*" onchange="return addpicture();" >
+    <button class="il-button" id="addImage" onclick="return picture();" disabled>Add an Image Slide</button>
 </div>
+<div id="image-error"></div>
 <div class="new">
 <button class="il-button" id="addWeather" onclick="return weather();">Add a Weather Slide</button>
 </div>
@@ -146,6 +147,7 @@
                     if (text.startsWith("Error")) {
                         document.getElementById('image-error').innerHTML = text;
                     } else {
+                        document.getElementById('image-error').innerHTML = '';
                         loadItems();
                     }
                 });

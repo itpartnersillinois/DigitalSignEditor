@@ -1,0 +1,61 @@
+﻿@page
+@model DigitalSignEditor.Pages.EditPropertiesModel
+@{
+}
+<h1>Edit Properties</h1>
+<div class="box">
+<div class="two-column">
+    <div class="column">
+        <h2>Sign List</h2>
+        <ul id="signs">
+        </ul>
+    </div>
+    <div class="column">
+        <h2>Add New Sign</h2>
+        <p>Contact IT Partners if you need a sign added or removed.</p>
+        <p><a class="il-button hide" href="/AddSign" id="addsignbutton">Add Sign</a></p>
+    </div>
+</div>
+</div>
+@section Scripts
+{
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function (event) {
+        loadItems();
+    });
+
+    function loadItems() {
+        fetch('/Api/Sign/Get', {
+            method: 'GET',
+            headers: {
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+            }
+        }).then(res => res.json()).then(data => {
+            let signs = document.getElementById('signs');
+            signs.innerHTML = '';
+            data.items.forEach(element => {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                const div = document.createElement('div');
+                a.innerHTML = element.name;
+                a.setAttribute('href', '/properties?id=' + element.id);
+                div.innerHTML = `${element.college} - ${element.description}`
+                li.appendChild(a);
+                li.appendChild(div);
+                signs.appendChild(li);
+            });
+        });
+
+        fetch('/Api/Security/IsAdmin', {
+            method: 'GET',
+            headers: {
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+            }
+        }).then(res => res.json()).then(data => {
+            if (data) {
+                document.getElementById('addsignbutton').classList.remove('hide');
+            }
+        });
+    }
+</script>
+}

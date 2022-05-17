@@ -23,7 +23,7 @@ namespace DigitalSignEditor.ApiModels {
             Ratio = sign.RatioWidth + ":" + sign.RatioHeight;
             SignType = sign.SignType.ToString();
             Twitter = string.IsNullOrWhiteSpace(sign.TwitterHandle) ? "None" : sign.TwitterHandle;
-            Items = sign.Slides.OrderBy(s => s.Order).ThenBy(s => s.Name).Select(si => new SlideInformation {
+            Items = sign.Slides == null ? new List<SlideInformation>() : sign.Slides.OrderBy(s => s.Order).ThenBy(s => s.Name).Select(si => new SlideInformation {
                 Name = si.Name,
                 Description = string.IsNullOrWhiteSpace(si.Description) ? "" : si.Description,
                 Id = si.Id,

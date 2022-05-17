@@ -13,18 +13,18 @@ namespace DigitalSignEditor.Api {
     [Route("api/[controller]")]
     [ApiController]
     public class ImageController : ControllerBase {
-        private readonly Func<byte[], int, int, int, int, bool> imageCheckAction;
+        private readonly Func<byte[], int, int, int, int, int, string> imageCheckAction;
         private readonly ISecurityHelper securityHelper;
         private readonly ISignRepository signRepository;
 
-        public ImageController(ISignRepository signRepository, ISecurityHelper securityHelper, Func<byte[], int, int, int, int, bool> imageCheckAction) {
+        public ImageController(ISignRepository signRepository, ISecurityHelper securityHelper, Func<byte[], int, int, int, int, int, string> imageCheckAction) {
             this.signRepository = signRepository;
             this.securityHelper = securityHelper;
             this.imageCheckAction = imageCheckAction;
         }
 
         [HttpPost("Add")]
-        public async Task<int> AddImageSlide([FromForm] IFormFile file, [FromForm] int id) {
+        public async Task<string> AddImageSlide([FromForm] IFormFile file, [FromForm] int id) {
             var sign = await signRepository.ReadAsync(rep => rep.Signs.FirstOrDefault(s => s.Id == id));
             if (sign == null || !securityHelper.CanAccess(User, sign.Id)) {
                 return default;
@@ -32,15 +32,16 @@ namespace DigitalSignEditor.Api {
             using var ms = new MemoryStream();
             file.CopyTo(ms);
             var fileBytes = ms.ToArray();
-            if (!imageCheckAction(fileBytes, sign.MinimumWidth, sign.MinimumHeight, sign.RatioWidth, sign.RatioHeight)) {
-                return default;
+            var errorMessage = imageCheckAction(fileBytes, sign.MaximumSize, sign.MinimumWidth, sign.MinimumHeight, sign.RatioWidth, sign.RatioHeight);
+            if (!string.IsNullOrWhiteSpace(errorMessage)) {
+                return errorMessage;
             }
             ChangedHelper.SignChanged(signRepository, null, null);
             ChangedHelper.UpdateSignLastUpdated(signRepository, sign.Id);
             var storage = new StorageItem(file.FileName, fileBytes);
             await signRepository.CreateAsync(storage);
             var totalItems = await signRepository.ReadAsync(rep => rep.Slides.Count(s => s.SignId == sign.Id));
-            return await signRepository.CreateAsync(new Slide {
+            var returnValue = signRepository.CreateAsync(new Slide {
                 IsActive = true,
                 LastUpdated = DateTime.Now,
                 Name = storage.Name,
@@ -51,6 +52,7 @@ namespace DigitalSignEditor.Api {
                 Order = totalItems + 1,
                 StorageItemId = storage.Id
             });
+            return returnValue.Result.ToString();
         }
     }
 }
