@@ -2,7 +2,6 @@
 using System.Linq;
 using DigitalSignEditor.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
 
 namespace DigitalSignEditor.Controllers {
 
@@ -14,18 +13,25 @@ namespace DigitalSignEditor.Controllers {
             this.signRepository = signRepository;
         }
 
-        [HttpGet("{id}")]
-        public void Index(int id) {
-            var storage = signRepository.Read(rep => rep.StorageItems.FirstOrDefault(si => si.Id == id));
+        [HttpGet("donor/{id}")]
+        public void Donor(int id) {
+            var storage = signRepository.Read(rep => rep.Donors.FirstOrDefault(d => d.Id == id));
             if (storage == null) {
                 Response.StatusCode = 404;
             }
             Response.StatusCode = 200;
-            string contentType;
-            if (!new FileExtensionContentTypeProvider().TryGetContentType(storage.Name, out contentType)) {
-                contentType = "application/unknown";
+            var stream = new MemoryStream(storage.Image);
+            stream.CopyToAsync(Response.Body);
+        }
+
+        [HttpGet("{id}")]
+        public void Index(int id) {
+            var storage = signRepository.Read(rep => rep.StorageItems.FirstOrDefault(si => si.Id == id));
+            if (storage == null || storage.Data == null) {
+                Response.StatusCode = 404;
             }
-            Response.ContentType = contentType;
+            Response.StatusCode = 200;
+            Response.ContentType = "image/unknown";
             var stream = new MemoryStream(storage.Data);
             stream.CopyToAsync(Response.Body);
         }
