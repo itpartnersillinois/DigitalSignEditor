@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace DigitalSignEditor.Pages
 {
-    public class NewPageModel : PageModel
+    public class EditDonorsModel : PageModel
     {
         public void OnGet()
         {

@@ -1,0 +1,189 @@
+﻿@page
+@model DigitalSignEditor.Pages.EditDonorsModel
+<h1>Edit Education Donors</h1>
+<div class="box">
+    <h2>Education Donor List</h2>
+   <select id="donor" onchange="return populate()">
+   </select>
+   <p>
+        <button id="donor-add" class="il-button" onclick="return insertNew();">Add New Donor</button>
+    </p>
+    <p id="donor-noaccess" style="display: none;">This is the College of Education donor list, and can only be modified by people who can edit the College of Education digital signs.</p>
+</div>
+
+<div id="donor-details" class="hide">
+    <h2>Donor Details</h2>
+    <div id="edit-properties">
+        <p><label for="name">Name:</label> <input type="text" id="name" /></p>
+        <p><label for="personname">Donor Name:</label> <input type="text" id="personname" /></p>
+        <p><label for="description">Description:</label><br /> <textarea type="text" id="description"></textarea></p>
+    </div>
+    <span id="id" style="display: none;"></span>
+    <button class="il-button" id="update" onclick="return update();">Add/Update Donor</button>
+    <span id="update-alert" class="alert hide">Donor Updated</span>
+</div>
+
+<div id="donor-image" class="hide box">
+    <div class="two-column">
+        <div class="column">
+            <h2>Image</h2>
+            <img id="image-photo" src="" style="display: none; width: 200px; margin-right: 10px;" />
+        </div>
+        <div class="column">
+            <label for="image-upload" class="hidden">Choose an image to upload</label>
+            <input type="file" id="image-upload" name="image-upload" accept="image/*" onchange="return addPicture();">
+            <p>
+                <button class="il-button" id="addImage" onclick="return updatePicture();" disabled>Add Image</button>
+                <button class="il-button" id="deleteImage" onclick="return deletePicture();" disabled>Delete Image</button>
+            </p>
+        </div>
+    </div>
+</div>
+@section Scripts
+    {
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function (event) {
+            loadItems();
+        });
+
+        function loadItems() {
+            fetch('/api/donor/Permission', {
+                method: 'GET',
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                }
+            }).then(function (response) {
+                return response.text().then(function (val) {
+                    if (!val) {
+                        document.getElementById('donor').style.display = 'none';
+                        document.getElementById('donor-add').style.display = 'none';
+                        document.getElementById('donor-noaccess').style.display = '';
+                    }
+                });
+            });
+            fetch('/Api/Donor/GetAll', {
+                method: 'GET',
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                }
+            }).then(res => res.json()).then(data => {
+                let donor = document.getElementById('donor');
+                donor.innerHTML = '';
+                const optionNew = document.createElement('option');
+                optionNew.innerHTML = '...choose a donor to edit...';
+                optionNew.setAttribute('value', '0');
+                donor.appendChild(optionNew);
+                data.forEach(element => {
+                    const option = document.createElement('option');
+                    option.innerHTML = `${element.name}`
+                    option.setAttribute('value', element.id);
+                    donor.appendChild(option);
+                });
+            });
+        }
+
+        function populate() {
+            fetch('/Api/Donor/GetById/' + document.querySelector('#donor').value, {
+                method: 'GET',
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                }
+            }).then(res => res.json()).then(data => {
+                document.getElementById('id').innerHTML = data.id;
+                document.getElementById('description').value = data.description;
+                document.getElementById('name').value = data.name;
+                document.getElementById('personname').value = data.personName;
+                document.getElementById('donor-details').classList.remove('hide');
+                document.getElementById('donor-image').classList.remove('hide');
+                if (data.imageUrl != '') {
+                    document.getElementById('image-photo').setAttribute('src', '/image/donor/' + data.id);
+                    document.getElementById('image-photo').style.display = '';
+                    document.getElementById('deleteImage').removeAttribute('disabled');
+                } else {
+                    document.getElementById('image-photo').setAttribute('src', '');
+                    document.getElementById('image-photo').style.display = 'none';
+                    document.getElementById('deleteImage').setAttribute('disabled', true);
+                }
+            });
+
+            document.querySelector('#donor').value
+        }
+        function insertNew() {
+            document.getElementById('id').innerHTML = '0';
+            document.getElementById('description').value = '';
+            document.getElementById('name').value = '';
+            document.getElementById('personname').value = '';
+            document.getElementById('image-photo').setAttribute('src', '');
+            document.getElementById('image-photo').style.display = 'none';
+            document.getElementById('donor-details').classList.remove('hide');
+            document.getElementById('donor-image').classList.add('hide');
+        }
+
+        function update() {
+            let object = {};
+            object['id'] = document.getElementById('id').innerHTML;
+            object['name'] = document.getElementById('name').value;
+            object['description'] = document.getElementById('description').value;
+            object['personname'] = document.getElementById('personname').value;
+            object['isactive'] = true;
+            var json = JSON.stringify(object);
+
+            fetch('/Api/Donor/Save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: json
+            }).then(response => response.text()).then(function (body) {
+                document.getElementById('id').innerHTML = body;
+                var alertItem = document.querySelector('#update-alert');
+                alertItem.classList.remove('hide');
+                alertItem.classList.remove('fadeout');
+                setInterval(function () { alertItem.classList.add('fadeout'); }, 2000);
+                document.getElementById('donor-image').classList.remove('hide');
+                loadItems();
+            });
+        }
+
+        function addPicture() {
+            if (document.getElementById('image-upload').files.length > 0) {
+                document.getElementById('addImage').removeAttribute('disabled');
+            } else {
+                document.getElementById('addImage').setAttribute('disabled', true);
+            }
+            return true;
+        }
+
+        function updatePicture() {
+            var fd = new FormData();
+            var file_data = document.getElementById('image-upload').files[0];
+            fd.append('file', file_data);
+            fd.append('id', document.getElementById('id').innerHTML);
+            fetch('/Api/Donor/SaveImage', {
+                method: 'POST',
+                body: fd
+            }).then(function (response) {
+                return response.text().then(function (text) {
+                    document.getElementById('image-photo').setAttribute('src', '/image/donor/' + document.getElementById('id').innerHTML + '?id=' + new Date().getTime());
+                    document.getElementById('image-photo').style.display = '';
+                    document.getElementById('deleteImage').setAttribute('disabled', true);
+                });
+            });
+        }
+
+        function deletePicture() {
+            var fd = new FormData();
+            fd.append('id', document.getElementById('id').innerHTML);
+            fetch('/Api/Donor/RemoveImage', {
+                method: 'POST',
+                body: fd
+            }).then(function (response) {
+                return response.text().then(function (text) {
+                    document.getElementById('image-photo').setAttribute('src', '');
+                    document.getElementById('image-photo').style.display = 'none';
+                    document.getElementById('deleteImage').removeAttribute('disabled');
+                });
+            });
+        }
+
+
+    </script>
+}
