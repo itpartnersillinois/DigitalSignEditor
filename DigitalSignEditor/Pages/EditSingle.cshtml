@@ -104,15 +104,15 @@
                     divData.innerHTML = `Calendar`
                 }
                 const divDates = document.createElement('div');
-                divDates.innerHTML = `<label for='from${element.id}'>From </label><input id='from${element.id}' value='${element.startDate}' class='date' /> <br /><label for='to{element.id}'>To</label> <input id='to${element.id}' value='${element.endDate}' class='date' />`
+                const startDateIso = element.startDate == "" || element.startDate == "N/A" ? "" : new Date(new Date(element.startDate) - (new Date().getTimezoneOffset() * 60000)).toISOString().replace('.000Z', '');
+                const endDateIso = element.endDate == "" || element.endDate == "N/A" ? "" : new Date(new Date(element.endDate) - (new Date().getTimezoneOffset() * 60000)).toISOString().replace('.000Z', '');
+                divDates.innerHTML = `<label for='from${element.id}'>From </label><input type='datetime-local' id='from${element.id}' value='${startDateIso}' step='36000' class='date' /> <br /><label for='to${element.id}'>To</label> <input type='datetime-local' id='to${element.id}' value='${endDateIso}' step='36000' class='date' />`
                 const divButtons = document.createElement('div');
                 divButtons.innerHTML = `<button class='il-button narrow' onclick='return edit(${element.id});'>Save</button> <button class='il-button narrow' onclick='return moveup(${element.id});'><div class="il-icon rotate">back</div></button> <button class='il-button narrow' onclick='return movedown(${element.id});'><div class="il-icon rotate">next</div></button> <button class='il-button narrow' onclick='return remove(${element.id});'>Remove</button>`
-
                 divFlex.appendChild(divName);
                 divFlex.appendChild(divData);
                 divFlex.appendChild(divDates);
                 divFlex.appendChild(divButtons);
-
                 li.appendChild(divFlex);
                 const divDescription = document.createElement('div');
                 divDescription.innerHTML = `<label for='description${element.id}' class='hidden'>Description </label><input id='description${element.id}' value='${element.description}' />`
