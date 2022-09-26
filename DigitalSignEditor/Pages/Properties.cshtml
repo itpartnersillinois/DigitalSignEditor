@@ -9,7 +9,7 @@
     <p><label for="twitter">Twitter Feed:</label> <input type="text" id="twitter" /></p>
     <p><label for="minimumwidth">Minimum Width for Images:</label> <input type="text" id="minimumwidth" /></p>
     <p><label for="minimumheight">Minimum Height for Images:</label> <input type="text" id="minimumheight" /></p>
-    <p><label for="maximumsize">Maximum File Size (in KB):</label> <input type="text" id="maximumsize" /></p>
+    <p><label for="maximumsize">Maximum File Size (in KB, "0KB" means no file size limit):</label> <input type="text" id="maximumsize" /></p>
     <p><label for="ratio">Image Ratio:</label> <input type="text" id="ratio" /></p>
 </div>
 
@@ -61,7 +61,7 @@
             document.getElementById('ratio').value = data.ratio;
             document.getElementById('minimumheight').value = data.minimumHeight;
             document.getElementById('minimumwidth').value = data.minimumWidth;
-            document.getElementById('maximumsize').value = data.maximumSize;
+            document.getElementById('maximumsize').value = data.maximumSize == "0KB" ? "" : data.maximumSize;
         });
         fetch('/Api/Security/Get/' + id, {
             method: 'GET',
