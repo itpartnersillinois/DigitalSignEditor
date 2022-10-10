@@ -44,18 +44,12 @@ namespace DigitalSignEditor.Api {
         [HttpGet("Twitter/{id}")]
         [AllowAnonymous]
         [DisableCors]
-        public IActionResult Twitter(string id) {
-            var returnValue = twitterCache.GetCache(id);
-            if (!string.IsNullOrEmpty(returnValue)) {
-                return new JsonResult(JsonConvert.DeserializeObject<List<Tweet>>(returnValue));
-            }
-            if (!twitterHelper.Update(id)) {
-                return new JsonResult(new List<Tweet>());
-            }
-            var jsonResult = new JsonResult(twitterHelper.Tweets);
-            twitterCache.AddCache(id, JsonConvert.SerializeObject(jsonResult.Value));
-            return jsonResult;
-        }
+        public IActionResult Twitter(string id) => TwitterPull(id, id, true);
+
+        [HttpGet("TwitterSingle/{id}")]
+        [AllowAnonymous]
+        [DisableCors]
+        public IActionResult TwitterSingle(string id) => TwitterPull(id, id + "=single", false);
 
         [HttpGet("Weather")]
         [AllowAnonymous]
@@ -63,6 +57,19 @@ namespace DigitalSignEditor.Api {
         public IActionResult Weather() {
             weatherHelper.Update();
             return new JsonResult(weatherHelper);
+        }
+
+        private IActionResult TwitterPull(string id, string cacheName, bool includeMentions) {
+            var returnValue = twitterCache.GetCache(cacheName);
+            if (!string.IsNullOrEmpty(returnValue)) {
+                return new JsonResult(JsonConvert.DeserializeObject<List<Tweet>>(returnValue));
+            }
+            if (!twitterHelper.Update(id, includeMentions)) {
+                return new JsonResult(new List<Tweet>());
+            }
+            var jsonResult = new JsonResult(twitterHelper.Tweets);
+            twitterCache.AddCache(cacheName, JsonConvert.SerializeObject(jsonResult.Value));
+            return jsonResult;
         }
     }
 }
