@@ -10,7 +10,7 @@ namespace DigitalSignEditor.GithubModels {
 
         public GithubSign(Sign sign) {
             var slides = sign.Slides == null ? new List<Slide>() :
-                sign.Slides.Where(s => s.IsActive && (s.StartDate == null || s.StartDate >= DateTime.Today) && (s.EndDate == null || s.EndDate <= DateTime.Today))
+                sign.Slides.Where(s => s.IsActive && (s.StartDate == null || DateTime.Now >= s.StartDate) && (s.EndDate == null || DateTime.Now <= s.EndDate))
                     .OrderBy(s => s.Order).ToList();
             Url = sign.Url ?? "";
             Title = sign.Name ?? "";
