@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using DigitalSignEditor.Data.Models;
 using DigitalSignEditor.GithubModels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -36,6 +37,48 @@ namespace DigitalSignEditorUnitTest.GithubModels {
                         IsActive = true,
                         StartDate = null,
                         EndDate = null
+                    }
+                }
+            };
+
+            //Act
+            var githubSign = new GithubSign(sign);
+
+            //Assert
+            Assert.AreEqual("test", githubSign.Url);
+            Assert.AreEqual("test name", githubSign.Title);
+            Assert.AreEqual(2, githubSign.Slides.Count);
+            var jsonExpected = "{\"college\":\"college_of_education\",\"slides\":[{\"filename\":\"testurl\",\"filenameCompressed\":\"test full compressed url\",\"filenameFull\":\"test full url\",\"title\":\"testslidename\",\"type\":\"image\"},{\"filename\":\"testurl2\",\"filenameCompressed\":\"test full compressed url 2\",\"filenameFull\":\"test full url 2\",\"title\":\"testslidename2\",\"type\":\"weather\"}],\"title\":\"test name\",\"twitter\":\"twitter\",\"url\":\"test\"}";
+            Assert.AreEqual(jsonExpected, JsonConvert.SerializeObject(githubSign));
+        }
+
+        [TestMethod]
+        public void Constructor_Basic_CheckDates() {
+            //Arrange
+            var sign = new Sign {
+                Url = "test",
+                Name = "test name",
+                TwitterHandle = "twitter",
+                Slides = new List<Slide> {
+                    new Slide {
+                        Url = "testurl",
+                        Name = "testslidename",
+                        DisplayUrl = "test full url",
+                        DisplayUrlCompressed = "test full compressed url",
+                        Option = SlideType.Image,
+                        IsActive = true,
+                        StartDate = null,
+                        EndDate = null
+                    },
+                    new Slide {
+                        Url = "testurl2",
+                        Name = "testslidename2",
+                        DisplayUrl = "test full url 2",
+                        DisplayUrlCompressed = "test full compressed url 2",
+                        Option = SlideType.Weather,
+                        IsActive = true,
+                        StartDate = DateTime.Now.AddDays(-1),
+                        EndDate = DateTime.Now.AddDays(1)
                     }
                 }
             };
