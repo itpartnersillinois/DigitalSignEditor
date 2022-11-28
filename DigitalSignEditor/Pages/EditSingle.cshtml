@@ -46,10 +46,12 @@
     <button class="il-button" id="addVideo" onclick="return video();" disabled>Add a Video Slide</button>
 </div>
 <div class="new">
-    <label for="calendartitle">Calendar Title: </label>
-    <input type="text" id="calendartitle" name="calendartitle"  onchange="return addcalendar();">
-    <label for="calendarid">Calendar ID: </label>
-    <input type="text" id="calendarid" name="calendarid" class="seconds"  onchange="return addcalendar();">
+    <label for="calendarid">Calendar: </label>
+    <select onchange="return addcalendar();" id="calendarid" name="calendarid" class="seconds">
+        <option value="">Choose one</option>
+        <option value="1">Undergrad Success Lab Calendar</option>
+        <option value="2">Margolis Market Information Lab</option>
+    </select>
     <button class="il-button" id="addCalendar" onclick="return calendar();" disabled>Add a Calendar Slide</button>
 </div>
 
@@ -228,7 +230,7 @@
     }
 
     function addcalendar() {
-        if (document.getElementById('calendartitle').value != '' && document.getElementById('calendarid').value) {
+        if (document.getElementById('calendarid').value) {
             document.getElementById('addCalendar').removeAttribute('disabled');
         } else {
             document.getElementById('addCalendar').setAttribute('disabled', true);
@@ -239,8 +241,8 @@
     function calendar() {
         let object = {};
         object['signId'] = document.getElementById('slideId').innerText;
-        object['name'] = document.getElementById('calendartitle').value;
         object['data'] = document.getElementById('calendarid').value;
+        object['name'] = document.getElementById('calendarid').options[object['data']].text;
         object['option'] = 3;
         var json = JSON.stringify(object);
 

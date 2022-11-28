@@ -20,6 +20,11 @@
     border: solid 2px var(--il-blue);
 }
 
+    .box.box-orange {
+        background: white;
+        border: solid 2px var(--il-altgeld);
+    }
+
     .box .two-column {
         display: flex;
         column-gap: 20px;
