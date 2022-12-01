@@ -54,7 +54,7 @@
                 }
             }).then(function (response) {
                 return response.text().then(function (val) {
-                    if (!val) {
+                    if (!(val && val === 'true')) {
                         document.getElementById('donor').style.display = 'none';
                         document.getElementById('donor-add').style.display = 'none';
                         document.getElementById('donor-noaccess').style.display = '';
