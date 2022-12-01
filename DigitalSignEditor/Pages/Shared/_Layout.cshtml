@@ -14,7 +14,35 @@
         <script type="text/javascript">function OptanonWrapper() { }</script>
     -->
     <script src="https://cdn.disability.illinois.edu/skipto.min.js"></script>
-    <script>var SkipToConfig = { 'settings': { 'skipTo': { displayOption: 'popup', colorTheme: 'illinois' } } };</script>
+    <script>var SkipToConfig = { 'settings': { 'skipTo': { colorTheme: 'illinois' } } };</script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function (event) {
+            fetch('/Api/Security/IsAdmin', {
+                method: 'GET',
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                }
+            }).then(function (response) {
+                return response.text().then(function (val) {
+                    if (val && val === 'true') {
+                        document.getElementById('menu-properties').classList.remove('hide');
+                    }
+                });
+            });
+            fetch('/api/donor/Permission', {
+                method: 'GET',
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                }
+            }).then(function (response) {
+                return response.text().then(function (val) {
+                    if (val && val === 'true') {
+                        document.getElementById('menu-donors').classList.remove('hide');
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body>
     <header>
@@ -38,10 +66,10 @@
                 <il-nav-link>
                     <a href="/edit" target="_self">Sign Editor</a>
                 </il-nav-link>
-                <il-nav-link>
+                <il-nav-link id="menu-properties" class="hide">
                     <a href="/editproperties" target="_self">Sign Properties Editor</a>
                 </il-nav-link>
-                <il-nav-link>
+                <il-nav-link id="menu-donors" class="hide">
                     <a href="/editdonors" target="_self">Education Donor Editor</a>
                 </il-nav-link>
             </il-nav>

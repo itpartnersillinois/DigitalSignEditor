@@ -3,7 +3,9 @@
 @{
 }
 <h1>Edit Properties</h1>
-<div class="box box-orange">
+<p id="properties-noaccess">Contact a sign administrator to update the sign properties.</p>
+
+<div class="box box-orange hide" id="properties-details">
 <div class="two-column">
     <div class="column">
         <h2>Edit Sign</h2>
@@ -12,8 +14,7 @@
     </div>
     <div class="column">
         <h2>Add New Sign</h2>
-        <p>Contact IT Partners if you need a sign added or removed.</p>
-        <p><a class="il-button hide" href="/AddSign" id="addsignbutton">Add Sign</a></p>
+        <p><a class="il-button" href="/AddSign" id="addsignbutton">Add Sign</a></p>
     </div>
 </div>
 </div>
@@ -25,6 +26,20 @@
     });
 
     function loadItems() {
+        fetch('/Api/Security/IsAdmin', {
+            method: 'GET',
+            headers: {
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+            }
+        }).then(function (response) {
+            return response.text().then(function (val) {
+                if (val && val === 'true') {
+                    document.getElementById('properties-details').classList.remove('hide');
+                    document.getElementById('properties-noaccess').classList.add('hide');
+                }
+            });
+        });
+
         fetch('/Api/Sign/Get', {
             method: 'GET',
             headers: {
@@ -44,17 +59,6 @@
                 li.appendChild(div);
                 signs.appendChild(li);
             });
-        });
-
-        fetch('/Api/Security/IsAdmin', {
-            method: 'GET',
-            headers: {
-                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
-            }
-        }).then(res => res.json()).then(data => {
-            if (data) {
-                document.getElementById('addsignbutton').classList.remove('hide');
-            }
         });
     }
 </script>
