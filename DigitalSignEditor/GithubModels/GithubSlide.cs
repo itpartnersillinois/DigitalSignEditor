@@ -6,12 +6,16 @@ namespace DigitalSignEditor.GithubModels {
     public class GithubSlide {
 
         public GithubSlide(Slide slide) {
+            Data = slide.Data ?? "";
             Filename = slide.Url ?? "";
             FilenameFull = slide.DisplayUrl ?? "";
             FilenameCompressed = slide.DisplayUrlCompressed ?? "";
             Title = slide.Name;
             Type = slide.Option.ToString().ToLowerInvariant();
         }
+
+        [JsonProperty("data")]
+        public string Data{ get; set; }
 
         [JsonProperty("filename")]
         public string Filename { get; set; }
