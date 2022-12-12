@@ -24,6 +24,10 @@ namespace DigitalSignEditor.Helpers {
             return returnValue;
         }
 
+        public static string RunCommit(IFileCreatorFactory fileCreatorFactory) {
+            return fileCreatorFactory.Create().CommitCheck() ? "Commit cleanup successful" : "";
+        }
+
         public static string TransferSlides(ISignRepository signRepository, IFileCreatorFactory fileCreatorFactory) {
             var returnValue = new StringBuilder();
             foreach (SignType signType in Enum.GetValues(typeof(SignType))) {
