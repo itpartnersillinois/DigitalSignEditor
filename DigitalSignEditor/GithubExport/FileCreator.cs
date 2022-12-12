@@ -9,6 +9,7 @@ namespace DigitalSignEditor.GithubExport {
     // using Thread.Sleep(1000) to fix issues with response
     public class FileCreator : IFileCreator {
         private const string branch = "staging";
+        private const string commitTitle = "Automated Commit";
         private const string compressedImageFolder = "images_web";
         private const string dataFolder = "json";
         private const string dataFolderShared = "_data";
@@ -37,10 +38,23 @@ namespace DigitalSignEditor.GithubExport {
                 var sha = fileList.Result[0].Sha;
                 client.Repository.Content.UpdateFile(owner, repositoryName, timeoutFilename,
                     new UpdateFileRequest("Update to trigger reload", "{ \"time\": " + DateTime.Now.Ticks + " }", sha, branch));
-                var pullRequest = client.PullRequest.Create(owner, repositoryName, new NewPullRequest("Automated Commit", "staging", "main"));
+                var pullRequest = client.PullRequest.Create(owner, repositoryName, new NewPullRequest(commitTitle, "staging", "main"));
                 client.PullRequest.Merge(owner, repositoryName, pullRequest.Result.Number, new MergePullRequest { CommitTitle = "Automated Commit Merge from Digital Sign Uploader" });
             }
             return true;
+        }
+
+        public bool CommitCheck() {
+            var returnValue = false;
+            var client = CreateClient();
+            var repositoryList = client.PullRequest.GetAllForRepository(owner, repositoryName).Result;
+            foreach (var repository in repositoryList) {
+                if (repository.Title == commitTitle) {
+                    _ = client.PullRequest.Merge(owner, repositoryName, repository.Number, new MergePullRequest { CommitTitle = "Automated Commit Merge from Digital Sign Uploader - caught on commit check" });
+                    returnValue = true;
+                }
+            }
+            return returnValue;
         }
 
         public bool CreateDataFile(string filename, string contents) {
