@@ -20,10 +20,11 @@ namespace DigitalSignEditor.Api {
             this.fileCreatorFactory = fileCreatorFactory;
         }
 
+        [HttpGet("CleanCommit")]
+        public string CleanCommit() => SignManager.RunCommit(fileCreatorFactory).ToString();
+
         [HttpGet("Clean")]
-        public string CleanSigns() {
-            return SignManager.DeleteSlides(signRepository).ToString();
-        }
+        public string CleanSigns() => SignManager.DeleteSlides(signRepository).ToString();
 
         [HttpGet("Transfer")]
         public string TransferSigns() {
