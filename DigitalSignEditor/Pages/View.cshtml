@@ -4,9 +4,9 @@
 }
 
 <h1>Sign List</h1>
-<ul id="signs">
+<div id="signs">
 
-</ul>
+</div>
 
 @section Scripts
 {
@@ -24,11 +24,18 @@
         }).then(res => res.json()).then(data => {
             let signs = document.getElementById('signs');
             signs.innerHTML = '';
-            data.items.forEach(element => {
-                const li = document.createElement('li');
-                li.innerHTML = `<p><a href='https://digitalsign2.education.illinois.edu/${element.url}/index.html' target='_blank'>${element.name}</a> (${element.college})<br>${element.description}</p>`;
-                signs.appendChild(li);
-            });
+            data.forEach(college => {
+                const h2 = document.createElement('h2');
+                h2.innerHTML = college.collegeName;
+                signs.appendChild(h2);
+                const ul = document.createElement('ul');
+                college.items.forEach(element => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<p><a href='https://digitalsign2.education.illinois.edu/${element.url}/index.html' target='_blank'>${element.name}</a><br>${element.description}</p>`;
+                    ul.appendChild(li);
+                });
+                signs.appendChild(ul);
+            })
         });
     }
 </script>

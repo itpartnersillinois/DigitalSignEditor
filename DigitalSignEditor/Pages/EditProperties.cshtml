@@ -9,12 +9,12 @@
 <div class="two-column">
     <div class="column">
         <h2>Edit Sign</h2>
-        <ul id="signs">
-        </ul>
+        <div id="signs"></div>
     </div>
     <div class="column">
-        <h2>Add New Sign</h2>
+        <h2>Administration</h2>
         <p><a class="il-button" href="/AddSign" id="addsignbutton">Add Sign</a></p>
+        <p><a class="il-button" href="#" onclick="return getPermissions();" id="getpermissionss">Get Permissions Sheet</a></p>
     </div>
 </div>
 </div>
@@ -48,18 +48,41 @@
         }).then(res => res.json()).then(data => {
             let signs = document.getElementById('signs');
             signs.innerHTML = '';
-            data.items.forEach(element => {
-                const li = document.createElement('li');
-                const a = document.createElement('a');
-                const div = document.createElement('div');
-                a.innerHTML = element.name;
-                a.setAttribute('href', '/properties?id=' + element.id);
-                div.innerHTML = `${element.college} - ${element.description}`
-                li.appendChild(a);
-                li.appendChild(div);
-                signs.appendChild(li);
+            data.forEach(college => {
+                const h3 = document.createElement('h3');
+                h3.innerHTML = college.collegeName;
+                signs.appendChild(h3);
+                const ul = document.createElement('ul');
+                college.items.forEach(element => {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    const div = document.createElement('div');
+                    a.innerHTML = element.name;
+                    a.setAttribute('href', '/properties?id=' + element.id);
+                    div.innerHTML = element.description;
+                    li.appendChild(a);
+                    li.appendChild(div);
+                    ul.appendChild(li);
+                });
+                signs.appendChild(ul);
             });
         });
+    }
+
+    function getPermissions() {
+        fetch('/Api/Security/GetPermissions', {
+            method: 'GET',
+            headers: {
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+            }
+        }).then(res => res.json()).then(data => {
+            let str = '';
+            data.forEach(element => {
+                    str = str + element.college + ',' + element.signName + ',' + element.name + '\r\n';
+            });
+            window.open("data:text/csv;charset=utf-8," + escape(str));
+        });
+        return false;
     }
 </script>
 }

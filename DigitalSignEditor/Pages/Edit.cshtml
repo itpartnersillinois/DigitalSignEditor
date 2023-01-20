@@ -7,13 +7,23 @@
 <div class="two-column">
     <div class="column">
         <h2>Sign List</h2>
-        <ul id="signs">
-        </ul>
+        <div id="signs"></div>
     </div>
     <div class="column">
         <h2>Transfer Changes</h2>
         <p>The digital sign processor pulls changes hourly.</p>
         <p>Contact IT Partners if you need something triggered immediately.</p>
+        <h3>College of Education</h3>
+        <ul>
+            <li><a href="mailto:support@education.illinois.edu">support@education.illinois.edu</a></li>
+            <li><a href="tel:2172447005">217-244-7005</a></li>
+            <li><a href="https://internal.education.illinois.edu">College of Education KB Articles</a></li>
+        </ul>
+        <h3>Gies College of Business</h3>
+        <ul>
+            <li><a href="mailto:helpdesk@business.illinois.edu">helpdesk@business.illinois.edu</a></li>
+            <li><a href="tel:2172440812">217-244-0812</a></li>
+        </ul>
     </div>
 </div>
 </div>
@@ -33,16 +43,23 @@
         }).then(res => res.json()).then(data => {
             let signs = document.getElementById('signs');
             signs.innerHTML = '';
-            data.items.forEach(element => {
-                const li = document.createElement('li');
-                const a = document.createElement('a');
-                const div = document.createElement('div');
-                a.innerHTML = element.name;
-                a.setAttribute('href', '/editsingle?id=' + element.id);
-                div.innerHTML = `${element.college} - ${element.description}`
-                li.appendChild(a);
-                li.appendChild(div);
-                signs.appendChild(li);
+            data.forEach(college => {
+                const h3 = document.createElement('h3');
+                h3.innerHTML = college.collegeName;
+                signs.appendChild(h3);
+                const ul = document.createElement('ul');
+                college.items.forEach(element => {
+                        const li = document.createElement('li');
+                        const a = document.createElement('a');
+                        const div = document.createElement('div');
+                        a.innerHTML = element.name;
+                        a.setAttribute('href', '/editsingle?id=' + element.id);
+                        div.innerHTML = element.description == '' ? 'Active Slides: ' + element.numberActiveSlides : element.description + '<br>Active Slides: ' + element.numberActiveSlides;
+                        li.appendChild(a);
+                        li.appendChild(div);
+                        ul.appendChild(li);
+                });
+                signs.appendChild(ul);
             });
         });
     }
