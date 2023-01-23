@@ -1,6 +1,7 @@
 ﻿@page
 @model DigitalSignEditor.Pages.EditSingleModel
 @{
+        ViewData["Title"] = "Edit Sign";
 }
 <h1>Edit Sign</h1>
 <div class="box">
@@ -30,7 +31,7 @@
 
 <h2>Add New Slides</h2>
 <div class="new">
-    <label for="image-upload" class="hidden">Choose an image to upload</label>
+    <label for="image-upload" class="il-invisible">Choose an image to upload</label>
     <input type="file" id="image-upload" name="image-upload" multiple accept="image/*" onchange="return addpicture();" >
     <button class="il-button" id="addImage" onclick="return picture();" disabled>Add an Image Slide</button>
 </div>
@@ -86,11 +87,14 @@
             slides.innerHTML = '';
             data.items.forEach(element => {
                 const li = document.createElement('li');
+                if (!element.isActive) {
+                    li.className = 'disabled disabled-faded';
+                }
                 const divFlex = document.createElement('div');
                 divFlex.className = 'flex';
                 const divName = document.createElement('div');
-                divName.innerHTML = `<label for='name${element.id}' class='hidden'>Name </label><input id='name${element.id}' value='${element.name}' />`;
-                divName.innerHTML += `<br /><label for='isactive${element.id}'>Is Active? </label><input id='isactive${element.id}' type='checkbox'' value='true' ${element.isActive ? 'checked' : ''}/>`
+                divName.innerHTML = `<div><label for='name${element.id}' class='il-invisible'>Name </label><input id='name${element.id}' value='${element.name}' onchange='enableSave(${element.id});' /></div>`;
+                    divName.innerHTML += `<div style="margin-top: 10px"><label for='isactive${element.id}'>Is Active? </label><input id='isactive${element.id}' type='checkbox'' value='true' ${element.isActive ? 'checked' : ''} onchange='enableSave(${element.id});' /></div>`
                 const divData = document.createElement('div');
                 divData.className = 'data';
                 if (element.signOption == 0) {
@@ -106,24 +110,32 @@
                     divData.innerHTML = `Calendar`
                 }
                 const divDates = document.createElement('div');
+                divDates.className = 'dates';
                 const startDateIso = element.startDate == "" || element.startDate == "N/A" ? "" : new Date(new Date(element.startDate) - (new Date().getTimezoneOffset() * 60000)).toISOString().replace('.000Z', '');
                 const endDateIso = element.endDate == "" || element.endDate == "N/A" ? "" : new Date(new Date(element.endDate) - (new Date().getTimezoneOffset() * 60000)).toISOString().replace('.000Z', '');
-                divDates.innerHTML = `<label for='from${element.id}'>From </label><input type='datetime-local' id='from${element.id}' value='${startDateIso}' step='36000' class='date' /> <br /><label for='to${element.id}'>To</label> <input type='datetime-local' id='to${element.id}' value='${endDateIso}' step='36000' class='date' />`
+                    divDates.innerHTML = `<label for='from${element.id}'>From: </label><input type='datetime-local' id='from${element.id}' value='${startDateIso}' step='36000' class='date' onchange='enableSave(${element.id});' /><br /><label for='to${element.id}'>To: </label><input type='datetime-local' id='to${element.id}' value='${endDateIso}' step='36000' class='date' onchange='enableSave(${element.id});' />`
                 const divButtons = document.createElement('div');
-                divButtons.innerHTML = `<button class='il-button narrow' onclick='return edit(${element.id});'>Save</button> <button class='il-button narrow' onclick='return moveup(${element.id});'><div class="il-icon rotate">back</div></button> <button class='il-button narrow' onclick='return movedown(${element.id});'><div class="il-icon rotate">next</div></button> <button class='il-button narrow' onclick='return remove(${element.id});'>Remove</button>`
+                    divButtons.innerHTML = `<button disabled id='savebutton${element.id}' class='il-button narrow' onclick='return edit(${element.id});'>Save</button> <button class='il-button narrow notsave' onclick='return moveup(${element.id});'><div class="il-icon rotate">back</div></button> <button class='il-button narrow notsave' onclick='return movedown(${element.id});'><div class="il-icon rotate">next</div></button> <button class='il-button narrow notsave' onclick='return remove(${element.id});'>Remove</button>`
                 divFlex.appendChild(divName);
                 divFlex.appendChild(divData);
                 divFlex.appendChild(divDates);
                 divFlex.appendChild(divButtons);
                 li.appendChild(divFlex);
                 const divDescription = document.createElement('div');
-                divDescription.innerHTML = `<label for='description${element.id}' class='hidden'>Description </label><input id='description${element.id}' value='${element.description}' />`
+                divDescription.innerHTML = `<label for='description${element.id}'>Alt text for web: </label><input id='description${element.id}' value='${element.description}' onchange='enableSave(${element.id});' />`
                 divDescription.className = 'description';
                 li.appendChild(divDescription);
                 slides.appendChild(li);
             });
         });
     }
+
+    function enableSave(id) {
+            document.getElementById('savebutton' + id).disabled = false;
+            document.getElementById('savebutton' + id).parentNode.parentNode.parentNode.classList.remove('disabled-faded');
+            document.getElementById('savebutton' + id).classList.add('il-orange');
+            document.querySelectorAll('.notsave').forEach(b => b.disabled = true);
+        }
 
     function addpicture() {
         if (document.getElementById('image-upload').files.length > 0) {

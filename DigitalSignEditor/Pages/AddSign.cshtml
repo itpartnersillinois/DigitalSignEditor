@@ -1,26 +1,27 @@
 ﻿@page
 @model DigitalSignEditor.Pages.AddSignModel
 @{
+    ViewData["Title"] = "Add New Sign";
 }
-
-<h1>Add Sign</h1>
-<p>Note that all fields must be filled out, and this information cannot be changed after submission.</p>
+<h1>Add New Sign</h1>
+<p>Note that all fields must be filled out, and this information (except the name) cannot be changed after submission.</p>
 <div id="edit-properties">
-    <p><label for="signtype">Sign Type ID:</label> <select id="signtype">
+    <div class="ils-input-entry">
+        <label for="signtype">Sign Type ID:</label> <select id="signtype" required>
         <option value="">Choose one</option>
         <option value="0">Lobby</option>
         <option value="1">Simple</option>
         <option value="2">SimpleWithTitle</option>
-    </select></p>
-    <p><label for="college">College ID:</label> <select id="college">
+    </select></div>
+    <div class="ils-input-entry">
+        <label for="college">College ID:</label> <select id="college" required>
         <option value="">Choose one</option>
         <option value="0">College_of_Education</option>
         <option value="1">Gies_College_of_Business</option>
         <option value="2">College_of_Education_CRC</option>
-    </select></p>
-    <p><label for="name">Name:</label> <input type="text" id="name" /></p>
-    <p><label for="description">Description:</label> <input type="text" id="description" /></p>
-    <p><label for="url">Url:</label> <input type="text" id="url" /></p>
+    </select></div>
+    <div class="ils-input-entry"><label for="name">Name:</label> <input type="text" id="name" class="ils-input-long" required /></div>
+    <div class="ils-input-entry"><label for="url">Url:</label> <input type="text" id="url" class="ils-input-long" required /></div>
 </div>
 
 <button class="il-button" id="update" onclick="return update();">Add Sign</button>
@@ -40,11 +41,10 @@
             document.getElementById('url').value == '' ||
             document.getElementById('signtype').value == '' ||
             document.getElementById('college').value == '') {
-                alert('Note that all fields except description need to be completed');
+                alert('Note that all fields need to be completed');
         } else {
             let object = {};
             object['name'] = document.getElementById('name').value;
-            object['description'] = document.getElementById('description').value;
             object['url'] = document.getElementById('url').value;
             object['signtype'] = document.getElementById('signtype').value;
             object['college'] = document.getElementById('college').value;
