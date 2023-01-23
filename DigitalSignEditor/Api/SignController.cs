@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DigitalSignEditor.ApiModels;
@@ -52,9 +53,9 @@ namespace DigitalSignEditor.Api {
 
         [HttpGet("GetAll")]
         [AllowAnonymous]
-        public async Task<SignGroup> GetAllSigns() {
-            var signs = await signRepository.ReadAsync(rep => rep.Signs.Where(s => s.IsActive));
-            return new SignGroup(signs.ToList());
+        public async Task<IEnumerable<SignGroup>> GetAllSigns() {
+            var signs = await signRepository.ReadAsync(rep => rep.Signs.Include(s => s.Slides).Where(s => s.IsActive));
+            return SignGroup.Build(signs.ToList());
         }
 
         [HttpGet("Get/{id}")]
@@ -67,15 +68,15 @@ namespace DigitalSignEditor.Api {
         }
 
         [HttpGet("Get")]
-        public async Task<SignGroup> GetSigns() {
+        public async Task<IEnumerable<SignGroup>> GetSigns() {
             if (!securityHelper.IsLoggedIn(User)) {
-                return new SignGroup();
+                return new List<SignGroup>();
             }
             if (securityHelper.IsAdmin(User)) {
                 return await GetAllSigns();
             }
-            var signs = await signRepository.ReadAsync(rep => rep.Signs.Include(s => s.SignPermissions).Where(s => s.IsActive && s.SignPermissions.Select(sp => sp.Name).Contains(User.Identity.Name)));
-            return new SignGroup(signs.ToList());
+            var signs = await signRepository.ReadAsync(rep => rep.Signs.Include(s => s.Slides).Include(s => s.SignPermissions).Where(s => s.IsActive && s.SignPermissions.Select(sp => sp.Name).Contains(User.Identity.Name)));
+            return SignGroup.Build(signs.ToList());
         }
 
         [HttpPost("Update")]

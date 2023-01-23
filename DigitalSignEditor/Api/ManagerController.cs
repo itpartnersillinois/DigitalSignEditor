@@ -36,5 +36,13 @@ namespace DigitalSignEditor.Api {
             }).Forget();
             return "";
         }
+        [HttpGet("ForceTransfer")]
+        public string TransferSignsForce() {
+            Task.Run(() => {
+                Console.WriteLine(SignManager.TransferSlides(signRepository, fileCreatorFactory));
+            }).Forget();
+            return "forced transfer";
+        }
+
     }
 }

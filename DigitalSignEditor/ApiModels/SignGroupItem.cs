@@ -7,5 +7,6 @@
         public string Name { get; set; }
         public string SignType { get; set; }
         public string Url { get; set; }
+        public int NumberActiveSlides { get; set; }
     }
 }
