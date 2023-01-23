@@ -1,9 +1,12 @@
 ﻿@page
 @model DigitalSignEditor.Pages.EditDonorsModel
+@{
+    ViewData["Title"] = "Edit Education Donors";
+}
 <h1>Edit Education Donors</h1>
 <div class="box">
     <h2>Education Donor List</h2>
-   <select id="donor" onchange="return populate()">
+    <select id="donor" class="ils-input-long" onchange="return populate()">
    </select>
    <p>
         <button id="donor-add" class="il-button" onclick="return insertNew();">Add New Donor</button>
@@ -14,30 +17,26 @@
 <div id="donor-details" class="hide">
     <h2>Donor Details</h2>
     <div id="edit-properties">
-        <p><label for="name">Name:</label> <input type="text" id="name" /></p>
-        <p><label for="personname">Donor Name:</label> <input type="text" id="personname" /></p>
-        <p><label for="description">Description:</label><br /> <textarea type="text" id="description"></textarea></p>
+        <div class="ils-input-entry"><label for="name">Name:</label> <input type="text" id="name" class="ils-input-long" required /></div>
+        <div class="ils-input-entry"><label for="personname">Donor Name:</label> <input type="text" class="ils-input-long"  id="personname" required /></div>
+        <div class="ils-input-entry"><label for="description">Description:</label><textarea type="text" class="ils-input-long"  id="description" required></textarea></div>
     </div>
     <span id="id" style="display: none;"></span>
     <button class="il-button" id="update" onclick="return update();">Add/Update Donor</button>
-    <span id="update-alert" class="alert hide">Donor Updated</span>
+    <span id="update-alert" class="ils-input-alert hide">Donor Updated</span>
 </div>
 
 <div id="donor-image" class="hide box">
-    <div class="two-column">
-        <div class="column">
-            <h2>Image</h2>
-            <img id="image-photo" src="" style="display: none; width: 200px; margin-right: 10px;" />
-        </div>
-        <div class="column">
-            <label for="image-upload" class="hidden">Choose an image to upload</label>
-            <input type="file" id="image-upload" name="image-upload" accept="image/*" onchange="return addPicture();">
-            <p>
-                <button class="il-button" id="addImage" onclick="return updatePicture();" disabled>Add Image</button>
-                <button class="il-button" id="deleteImage" onclick="return deletePicture();" disabled>Delete Image</button>
-            </p>
-        </div>
-    </div>
+    <h2>Image</h2>
+    <p><img id="image-photo" src="" style="display: none; width: 200px; margin-right: 10px;" /></p>
+    <p>
+        <label for="image-upload" class="il-invisible">Choose an image to upload</label>
+        <input type="file" id="image-upload" name="image-upload" accept="image/*" onchange="return addPicture();">
+    </p>
+    <p>
+        <button class="il-button" id="addImage" onclick="return updatePicture();" disabled>Add Image</button>
+        <button class="il-button" id="deleteImage" onclick="return deletePicture();" disabled>Delete Image</button>
+    </p>
 </div>
 @section Scripts
     {

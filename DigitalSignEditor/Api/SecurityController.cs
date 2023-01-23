@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DigitalSignEditor.ApiModels;
 using DigitalSignEditor.Data;
 using DigitalSignEditor.Data.Models;
 using DigitalSignEditor.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DigitalSignEditor.Api {
 
@@ -63,5 +65,15 @@ namespace DigitalSignEditor.Api {
 
         [HttpGet("IsAdmin")]
         public bool IsAdmin() => securityHelper.IsAdmin(User);
+
+        [HttpGet("GetPermissions")]
+        public async Task<List<PermissionInformation>> GetPermissions() {
+            if (!securityHelper.IsAdmin(User)) {
+                return new List<PermissionInformation>();
+            }
+            var permissions = await signRepository.ReadAsync(rep => rep.SignPermissions.Include(sp => sp.Sign));
+            return permissions.ToList().Select(p => new PermissionInformation { College = p.Sign.College.ToString().ConvertEnum(), Name = p.Name, SignName = p.Sign.Name }).OrderBy(p => p.College).ThenBy(p => p.SignName).ThenBy(p => p.Name).ToList();
+        }
+
     }
 }

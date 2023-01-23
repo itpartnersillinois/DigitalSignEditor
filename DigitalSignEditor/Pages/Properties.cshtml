@@ -1,21 +1,24 @@
 ﻿@page
 @model DigitalSignEditor.Pages.PropertiesModel
 @{
+    ViewData["Title"] = "Sign Properties";
 }
 <h1>Sign Properties</h1>
 <div id="edit-properties">
-    <p><label for="name">Name:</label> <input type="text" id="name" /></p>
-    <p><label for="description">Description:</label> <input type="text" id="description" /></p>
-    <p><label for="twitter">Twitter Feed:</label> <input type="text" id="twitter" /></p>
-    <p><label for="minimumwidth">Minimum Width for Images:</label> <input type="text" id="minimumwidth" /></p>
-    <p><label for="minimumheight">Minimum Height for Images:</label> <input type="text" id="minimumheight" /></p>
-    <p><label for="maximumsize">Maximum File Size (in KB, "0KB" means no file size limit):</label> <input type="text" id="maximumsize" /></p>
-    <p><label for="ratio">Image Ratio:</label> <input type="text" id="ratio" /></p>
+    <div class="ils-input-entry"><label for="name">Name:</label> <input type="text" id="name" class="ils-input-long" required /></div>
+    <div class="ils-input-entry"><label for="description">Description:</label> <input type="text" id="description" class="ils-input-long" /></div>
+    <div class="ils-input-entry"><label for="twitter">Twitter Feed:</label> <input type="text" id="twitter" /></div>
+    <div class="ils-input-entry"><label for="minimumwidth">Minimum Width for Images:</label> <input type="text" id="minimumwidth" /></div>
+    <div class="ils-input-entry"><label for="minimumheight">Minimum Height for Images:</label> <input type="text" id="minimumheight" /></div>
+    <div class="ils-input-entry"><label for="maximumsize">Maximum File Size:</label> <input type="text" id="maximumsize" />
+        <p>in KB, "0KB" means no file size limit</p>
+    </div>
+    <div class="ils-input-entry"><label for="ratio">Image Ratio:</label> <input type="text" id="ratio" /></div>
 </div>
 
 <span id="slideId" style="display: none;"></span>
 <button class="il-button" id="update" onclick="return update();">Update Information</button>
-<span id="update-alert" class="alert hide">Sign Updated</span>
+<span id="update-alert" class="ils-input-alert hide">Sign Updated</span>
 
 <div class="box">
     <h2>Fixed items</h2>
@@ -30,7 +33,7 @@
 <ul id="permissions"></ul>
 <p><label for="newpermission">New Email:</label> <input type="text" id="newpermission" /></p>
 <button class="il-button" id="update" onclick="return addnewuser();">Add New User</button>
-<span id="user-alert" class="alert hide">Permission Added</span>
+<span id="user-alert" class="ils-input-alert hide">Permission Added</span>
 
 @section Scripts
 {

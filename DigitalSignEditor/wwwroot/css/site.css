@@ -1,16 +1,16 @@
 ﻿body {
+    --ils-input-form-label-width: 300px;
     margin: 0;
 }
 
     body main {
         max-width: var(--il-content-max-width);
         margin: 20px auto;
+        padding: 0 30px;
     }
 
-.il-button[disabled], .il-button[disabled]:focus, .il-button[disabled]:hover {
-    background: var(--il-gray-1);
-    color: var(--il-gray-2);
-    border-color: var(--il-gray-2);
+#signs {
+    margin-top: 20px;
 }
 
 .box {
@@ -28,12 +28,11 @@
     .box .two-column {
         display: flex;
         column-gap: 20px;
-        flex-column-gap: 20px;
         margin-top: 20px;
     }
 
         .box .two-column .column {
-            flex: 1 1 auto;
+            flex: 1 1 50%;
         }
 
 .new {
@@ -47,11 +46,6 @@
         margin-left: 20px;
     }
 
-    .new input {
-        border: none;
-        border-bottom: thin solid var(--il-blue);
-    }
-
         .new input.seconds {
             width: 50px;
         }
@@ -61,10 +55,24 @@
         margin-left: 30px !important;
     }
 
+.il-formatted #slides li {
+    padding: 10px 0 15px 10px;
+    margin-bottom: 10px;
+    border-bottom: thin dashed var(--il-blue);
+}
+
+.il-formatted #slides li.disabled {
+    background: var(--il-cloud-1);
+    list-style: none;
+}
+
+.il-formatted #slides li.disabled-faded {
+    opacity: 60%;
+}
+
 .il-formatted #slides li div.flex {
     display: flex;
     column-gap: 20px;
-    flex-column-gap: 20px;
 }
 
     .il-formatted #slides li div.flex div {
@@ -72,32 +80,31 @@
     }
 
         .il-formatted #slides li div.flex div.data {
-            flex: 0 0 100px;
+            flex: 0 0 150px;
         }
 
         .il-formatted #slides li div.flex div.small {
             flex: 0 0 20px;
         }
 
-.il-formatted #slides li div.description {
-    width: 100%;
-}
+        .il-formatted #slides li div.flex .dates label {
+            display: inline-block;
+            width: 40px;
+        }
+
+    .il-formatted #slides li div.description {
+        margin-top: 10px;
+        width: 100%;
+    }
 
     .il-formatted #slides li div.description input {
-        width: 100%;
+        width: 80%;
         padding: 10px;
-        border-top: thin solid var(--il-cloud-2);
-        border-left: thin solid var(--il-cloud-2);
-        border-right: thin solid var(--il-cloud-2);
     }
 
 .il-formatted #slides img {
-    width: 100px;
-}
-
-.il-formatted #slides input {
-    border: none;
-    border-bottom: thin solid var(--il-blue);
+    width: 150px;
+    max-height: 90px;
 }
 
     .il-formatted #slides input.date {
@@ -117,18 +124,6 @@
     font-size: 16px;
 }
 
-.hidden {
-    position: absolute !important;
-    left: -9999px !important;
-    top: auto !important;
-    display: block !important;
-    text-align: left !important;
-    text-indent: -9999em !important;
-    width: 1px !important;
-    height: 1px !important;
-    overflow: hidden !important;
-}
-
 #image-upload {
     width: 50%;
     background: var(--il-cloud-1);
@@ -146,30 +141,12 @@
     margin: 20px 0;
 }
 
-    .il-formatted #edit-properties input {
-        width: 500px;
-        margin-left: 20px;
-        padding: 10px;
-        border-top: thin solid var(--il-cloud-2);
-        border-left: thin solid var(--il-cloud-2);
-        border-right: thin solid var(--il-cloud-2);
-    }
-
-    .il-formatted #edit-properties label {
-        min-width: 250px;
-        display: inline-block;
-        text-align: right;
-    }
-
 .il-formatted #permissions button {
     margin-left: 20px;
 }
 
 .il-formatted textarea {
-    width: 100%;
     height: 250px;
-    font-family: var(--il-font-sans);
-    font-size: 16px;
 }
 
 .il-formatted select {
@@ -188,10 +165,4 @@
 
 .hide, .il-button.hide {
     display: none;
-}
-
-.alert {
-    color: red;
-    font-weight: bold;
-    padding: 0 5px;
 }
