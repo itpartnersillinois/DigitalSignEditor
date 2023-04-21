@@ -3,32 +3,47 @@
     public class WeatherDay {
 
         public WeatherDay(dynamic weather, string title) {
-            Humidity = weather.humidity;
-            PrecipitationProbability = weather.precipProbability;
-            PrecipitationType = weather.precipType;
-            Summary = weather.summary;
-            TemperatureHigh = weather.temperatureHigh;
-            TemperatureHighFeelsLike = weather.apparentTemperatureHigh;
-            TemperatureLow = weather.temperatureLow;
-            TemperatureLowFeelsLike = weather.apparentTemperatureLow;
+            var item = weather.probabilityOfPrecipitation;
+            PrecipitationProbability = weather.probabilityOfPrecipitation.value;
+            Summary = weather.shortForecast;
+            Temperature = weather.temperature;
             Title = title;
-            WindSpeed = weather.windSpeed;
-            WindGustSpeed = weather.windGust;
+            Wind = $"Wind: {weather.windSpeed} {weather.windDirection}";
         }
 
-        public decimal Humidity { get; set; }
-        public string Precipitation => string.IsNullOrWhiteSpace(PrecipitationType) || PrecipitationProbability == 0 ? "" : $"Precipitation: {(PrecipitationProbability * 100).ToString("0")}% chance of {PrecipitationType}";
-        public decimal PrecipitationProbability { get; set; }
-        public string PrecipitationType { get; set; }
+        public string Precipitation => PrecipitationProbability == 0 ? "" : $"Precipitation: {PrecipitationProbability}% chance";
+        public int PrecipitationProbability { get; set; }
         public string Summary { get; set; }
-        public int TemperatureHigh { get; set; }
-        public int TemperatureHighFeelsLike { get; set; }
-        public int TemperatureLow { get; set; }
-        public int TemperatureLowFeelsLike { get; set; }
-        public string TempHighString => $"High of {TemperatureHigh}F (feels like {TemperatureHighFeelsLike}F)";
-        public string TempLowString => $"Low of {TemperatureLow}F (feels like {TemperatureLowFeelsLike}F)";
+        public int Temperature { get; set; }
         public string Title { get; set; }
-        public int WindGustSpeed { get; set; }
-        public int WindSpeed { get; set; }
+        public string Wind { get; set; }
+
+        public static string GetIcon(string s) {
+            if (s.ToLowerInvariant().Contains("rain")) {
+                return "rain";
+            }
+            if (s.ToLowerInvariant().Contains("snow")) {
+                return "snow";
+            }
+            if (s.ToLowerInvariant().Contains("wind")) {
+                return "wind";
+            }
+            if (s.ToLowerInvariant().Contains("sleet")) {
+                return "sleet";
+            }
+            if (s.ToLowerInvariant().Contains("snow")) {
+                return "snow";
+            }
+            if (s.ToLowerInvariant().Contains("fog")) {
+                return "fog";
+            }
+            if (s.ToLowerInvariant().Contains("clear")) {
+                return "clear";
+            }
+            if (s.ToLowerInvariant().Contains("cloud")) {
+                return "cloudy";
+            }
+            return string.Empty;
+        }
     }
 }
