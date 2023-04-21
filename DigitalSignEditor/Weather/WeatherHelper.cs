@@ -16,15 +16,14 @@ namespace DigitalSignEditor.Weather {
         public WeatherDay Day3 => days[2];
         public string Icon { get; set; }
 
-        //TODO Switch over to another service -- maybe https://api.weather.gov/gridpoints/ILX/95,71/forecast
         public void Update() {
-            if (lastAccessed == null || lastAccessed.Value.AddHours(1) < DateTime.Now) {
+            if (lastAccessed == null || lastAccessed.Value.AddMinutes(20) < DateTime.Now) {
                 lastAccessed = DateTime.Now;
                 var weatherJson = weatherAccess();
-                Icon = weatherJson["daily"].data[0].icon;
-                days[0] = new WeatherDay(weatherJson["daily"].data[0], "Today");
-                days[1] = new WeatherDay(weatherJson["daily"].data[1], "Tomorrow");
-                days[2] = new WeatherDay(weatherJson["daily"].data[2], DateTime.Now.AddDays(2).DayOfWeek.ToString());
+                days[0] = new WeatherDay(weatherJson.properties.periods[0], "Now");
+                days[1] = new WeatherDay(weatherJson.properties.periods[1], "In an hour");
+                days[2] = new WeatherDay(weatherJson.properties.periods[2], "In two hours");
+                Icon = WeatherDay.GetIcon(days[0].Summary);
             }
         }
     }
