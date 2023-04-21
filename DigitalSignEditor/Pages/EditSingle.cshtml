@@ -63,7 +63,13 @@
         loadItems();
     });
 
+
     function loadItems() {
+        var start = new Date().getTime();
+        var end = start;
+        while (end < start + 2500) {
+            end = new Date().getTime();
+        }
         const urlParams = new URLSearchParams(window.location.search);
         const id = urlParams.get('id');
         fetch('/Api/Sign/Get/' + id, {
