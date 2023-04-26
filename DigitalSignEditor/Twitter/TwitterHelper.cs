@@ -53,8 +53,8 @@ namespace DigitalSignEditor.Twitter {
             CredentialStore = new SingleUserInMemoryCredentialStore {
                 ConsumerKey = consumerKey,
                 ConsumerSecret = consumerSecret,
-                OAuthToken = oathToken,
-                OAuthTokenSecret = oathTokenSecret
+                AccessToken = oathToken,
+                AccessTokenSecret = oathTokenSecret
             }
         };
 
