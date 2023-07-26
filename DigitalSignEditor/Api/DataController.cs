@@ -1,75 +1,45 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using DigitalSignEditor.Calendar;
 using DigitalSignEditor.Data;
-using DigitalSignEditor.Twitter;
 using DigitalSignEditor.Weather;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace DigitalSignEditor.Api {
 
     [Route("api/[controller]")]
     [ApiController]
     public class DataController : Controller {
-        private readonly CalendarHelper calendarHelper;
-        private readonly CalendarIcsHelper calendarIcsHelper;
-        private readonly ISignRepository signRepository;
-        private readonly ITwitterCache twitterCache;
-        private readonly TwitterHelper twitterHelper;
-        private readonly WeatherHelper weatherHelper;
+        private readonly CalendarHelper _calendarHelper;
+        private readonly CalendarIcsHelper _calendarIcsHelper;
+        private readonly ISignRepository _signRepository;
+        private readonly WeatherHelper _weatherHelper;
 
-        public DataController(ITwitterCache twitterCache, TwitterHelper twitterHelper, WeatherHelper weatherHelper, CalendarHelper calendarHelper, CalendarIcsHelper calendarIcsHelper, ISignRepository signRepository) {
-            this.twitterCache = twitterCache;
-            this.twitterHelper = twitterHelper;
-            this.weatherHelper = weatherHelper;
-            this.calendarHelper = calendarHelper;
-            this.calendarIcsHelper = calendarIcsHelper;
-            this.signRepository = signRepository;
+        public DataController(WeatherHelper weatherHelper, CalendarHelper calendarHelper, CalendarIcsHelper calendarIcsHelper, ISignRepository signRepository) {
+            _weatherHelper = weatherHelper;
+            _calendarHelper = calendarHelper;
+            _calendarIcsHelper = calendarIcsHelper;
+            _signRepository = signRepository;
         }
 
         [HttpGet("Calendar/{id}")]
         [AllowAnonymous]
         [DisableCors]
         public IActionResult Calendar(int id) {
-            var calendar = signRepository.Read(sr => sr.CalendarItems.FirstOrDefault(ci => ci.Id == id));
+            var calendar = _signRepository.Read(sr => sr.CalendarItems.FirstOrDefault(ci => ci.Id == id));
             if (calendar == null) {
                 return new JsonResult("");
             }
-            return calendar.IsIcs ? new JsonResult(calendarIcsHelper.Get(calendar.Url)) : new JsonResult(calendarHelper.Get(calendar.Url));
+            return calendar.IsIcs ? new JsonResult(_calendarIcsHelper.Get(calendar.Url)) : new JsonResult(_calendarHelper.Get(calendar.Url));
         }
-
-        [HttpGet("Twitter/{id}")]
-        [AllowAnonymous]
-        [DisableCors]
-        public IActionResult Twitter(string id) => TwitterPull(id, id, true);
-
-        [HttpGet("TwitterSingle/{id}")]
-        [AllowAnonymous]
-        [DisableCors]
-        public IActionResult TwitterSingle(string id) => TwitterPull(id, id + "=single", false);
 
         [HttpGet("Weather")]
         [AllowAnonymous]
         [DisableCors]
         public IActionResult Weather() {
-            weatherHelper.Update();
-            return new JsonResult(weatherHelper);
-        }
-
-        private IActionResult TwitterPull(string id, string cacheName, bool includeMentions) {
-            var returnValue = twitterCache.GetCache(cacheName);
-            if (!string.IsNullOrEmpty(returnValue)) {
-                return new JsonResult(JsonConvert.DeserializeObject<List<Tweet>>(returnValue));
-            }
-            if (!twitterHelper.Update(id, includeMentions)) {
-                return new JsonResult(new List<Tweet>());
-            }
-            var jsonResult = new JsonResult(twitterHelper.Tweets);
-            twitterCache.AddCache(cacheName, JsonConvert.SerializeObject(jsonResult.Value));
-            return jsonResult;
+            _weatherHelper.Update();
+            return new JsonResult(_weatherHelper);
         }
     }
 }
