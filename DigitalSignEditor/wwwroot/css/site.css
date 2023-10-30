@@ -25,13 +25,17 @@
         border: solid 2px var(--il-altgeld);
     }
 
-    .box .two-column {
+    .box .two-column, .box .three-column {
         display: flex;
         column-gap: 20px;
         margin-top: 20px;
     }
 
         .box .two-column .column {
+            flex: 1 1 50%;
+        }
+
+        .box .three-column .column {
             flex: 1 1 50%;
         }
 
@@ -46,9 +50,9 @@
         margin-left: 20px;
     }
 
-        .new input.seconds {
-            width: 50px;
-        }
+    .new input.seconds {
+        width: 50px;
+    }
 
     .new button {
         width: 300px;
@@ -61,31 +65,31 @@
     border-bottom: thin dashed var(--il-blue);
 }
 
-.il-formatted #slides li.disabled {
-    background: var(--il-cloud-1);
-    list-style: none;
-}
-
-.il-formatted #slides li.disabled-faded {
-    opacity: 60%;
-}
-
-.il-formatted #slides li div.flex {
-    display: flex;
-    column-gap: 20px;
-}
-
-    .il-formatted #slides li div.flex div {
-        flex: 1 1 auto;
+    .il-formatted #slides li.disabled {
+        background: var(--il-cloud-1);
+        list-style: none;
     }
 
-        .il-formatted #slides li div.flex div.data {
-            flex: 0 0 150px;
+    .il-formatted #slides li.disabled-faded {
+        opacity: 60%;
+    }
+
+    .il-formatted #slides li div.flex {
+        display: flex;
+        column-gap: 20px;
+    }
+
+        .il-formatted #slides li div.flex div {
+            flex: 1 1 auto;
         }
 
-        .il-formatted #slides li div.flex div.small {
-            flex: 0 0 20px;
-        }
+            .il-formatted #slides li div.flex div.data {
+                flex: 0 0 150px;
+            }
+
+            .il-formatted #slides li div.flex div.small {
+                flex: 0 0 20px;
+            }
 
         .il-formatted #slides li div.flex .dates label {
             display: inline-block;
@@ -97,19 +101,19 @@
         width: 100%;
     }
 
-    .il-formatted #slides li div.description input {
-        width: 80%;
-        padding: 10px;
-    }
+        .il-formatted #slides li div.description input {
+            width: 80%;
+            padding: 10px;
+        }
 
 .il-formatted #slides img {
     width: 150px;
     max-height: 90px;
 }
 
-    .il-formatted #slides input.date {
-        width: 200px;
-    }
+.il-formatted #slides input.date {
+    width: 200px;
+}
 
 .il-formatted #slides .il-button {
     padding: 3px 12px;
