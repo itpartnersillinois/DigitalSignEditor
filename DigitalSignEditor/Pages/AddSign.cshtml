@@ -7,19 +7,21 @@
 <p>Note that all fields must be filled out, and this information (except the name) cannot be changed after submission.</p>
 <div id="edit-properties">
     <div class="ils-input-entry">
-        <label for="signtype">Sign Type ID:</label> <select id="signtype" required>
+        <label for="signtype">Sign Type ID:</label><select id="signtype" required>
         <option value="">Choose one</option>
-        <option value="0">Lobby</option>
-        <option value="1">Simple</option>
-        <option value="2">SimpleWithTitle</option>
+        <option value="0">Lobby (has title, time)</option>
+        <option value="1">Simple (picture only)</option>
+        <option value="2">SimpleWithTitle (has title)</option>
     </select></div>
     <div class="ils-input-entry">
-        <label for="college">College ID:</label> <select id="college" required>
+        <label for="college">College ID:</label><select id="college" required>
         <option value="">Choose one</option>
         <option value="0">College_of_Education</option>
         <option value="1">Gies_College_of_Business</option>
         <option value="2">College_of_Education_CRC</option>
-    </select></div>
+        <option value="3">Swanlund</option>
+         </select>
+    </div>
     <div class="ils-input-entry"><label for="name">Name:</label> <input type="text" id="name" class="ils-input-long" required /></div>
     <div class="ils-input-entry"><label for="url">Url:</label> <input type="text" id="url" class="ils-input-long" required /></div>
 </div>
@@ -30,7 +32,7 @@
     <h2>SignType</h2>
     <p>Lobby, Simple, SimpleWithTitle</p>
     <h2>College Type</h2>
-    <p>College_of_Education, Gies_College_of_Business, College_of_Education_CRC</p>
+    <p>College_of_Education, Gies_College_of_Business, College_of_Education_CRC, Swanlund</p>
 </div>
 
 @section Scripts
