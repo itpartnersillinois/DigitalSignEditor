@@ -32,4 +32,4 @@ This will require an API key from Twitter (pulled from Project and Apps at https
 
 ## Notes (error logging, external tools, links, etc.): 
 
-N/A
+To add a new area, add a super-admin using the Configuration in Azure, add an enum to /Data/Models/SignEnums.cs, and add the enum to the dropdown in /Pages/AddSign.cshtml/
