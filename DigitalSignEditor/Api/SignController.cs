@@ -30,7 +30,7 @@ namespace DigitalSignEditor.Api {
                 return 0;
             }
             var college = int.Parse(json.college.ToString());
-            var signType = int.Parse(json.college.ToString());
+            var signType = int.Parse(json.signtype.ToString());
 
             var sign = new Sign {
                 Name = json.name,

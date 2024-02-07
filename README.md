@@ -10,11 +10,17 @@ Project to manage the digital signs in Github
 
 ## Production location: 
 
-Nothing yet
+https://digitalsigneditor.itpartners.illinois.edu
 
 ## Development location: 
 
 Currently, none. We do development on local machines.
+
+**Note:** Make sure you have either disconnected the Github tokens or do not run the GithubExport command. Otherwise, you will copy your local database to the production Github repository and mess up all the signs.
+
+You can use the DigitalSignEditorUnitTest to test out the GithubExport process independently.
+
+You can also update the Github configuration in the appsettings.json (or better yet, your user secrets file) to point to a temporary repository if you want to do end-to-end test. 
 
 ## How to deploy to production/development: 
 
@@ -28,8 +34,6 @@ To build the database, run Update-Database in Package Manager Console (see https
 
 This will require an Token from Github (pulled from https://github.com/settings/tokens). Remember to give the the token access to contents and pull requests in the repository. 
 
-This will require an API key from Twitter (pulled from Project and Apps at https://developer.twitter.com/en/portal)
-
 ## Notes (error logging, external tools, links, etc.): 
 
-To add a new area, add a super-admin using the Configuration in Azure, add an enum to /Data/Models/SignEnums.cs, and add the enum to the dropdown in /Pages/AddSign.cshtml/
+To add a new area, add a super-admin using the Configuration in Azure, add an enum to /Data/Models/SignEnums.cs, and add the enum to the dropdown in /Pages/AddSign.cshtml
