@@ -36,7 +36,7 @@ namespace DigitalSignEditor.Api {
             if (!string.IsNullOrWhiteSpace(errorMessage)) {
                 return errorMessage;
             }
-            ChangedHelper.SignChanged(signRepository, null, null);
+            ChangedHelper.SignChanged(signRepository, null, null, sign.Name);
             ChangedHelper.UpdateSignLastUpdated(signRepository, sign.Id);
             var storage = new StorageItem(file.FileName, fileBytes);
             await signRepository.CreateAsync(storage);

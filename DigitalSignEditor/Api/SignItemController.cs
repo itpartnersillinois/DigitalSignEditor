@@ -12,8 +12,8 @@ namespace DigitalSignEditor.Api {
     [Route("api/[controller]")]
     [ApiController]
     public class SignItemController : ControllerBase {
-        private ISecurityHelper securityHelper;
-        private ISignRepository signRepository;
+        private readonly ISecurityHelper securityHelper;
+        private readonly ISignRepository signRepository;
 
         public SignItemController(ISignRepository signRepository, ISecurityHelper securityHelper) {
             this.signRepository = signRepository;
@@ -22,12 +22,13 @@ namespace DigitalSignEditor.Api {
 
         [HttpPost("Add")]
         public async Task<int> AddSignItem([FromBody] dynamic json) {
-            var jsonObject = (dynamic) JObject.Parse(json.ToString());
+            var jsonObject = JObject.Parse(json.ToString());
             int signId = int.Parse(jsonObject.signId.ToString());
             if (!securityHelper.CanAccess(User, signId)) {
                 return default;
             }
-            ChangedHelper.SignChanged(signRepository, null, null);
+            var signItem = await signRepository.ReadAsync(rep => rep.Slides.FirstOrDefault(s => s.Id == signId));
+            ChangedHelper.SignChanged(signRepository, null, null, signItem.Name);
             ChangedHelper.UpdateSignLastUpdated(signRepository, signId);
             var totalItems = await signRepository.ReadAsync(rep => rep.Slides.Count(s => s.SignId == signId));
             return await signRepository.CreateAsync(new Slide {
@@ -44,11 +45,12 @@ namespace DigitalSignEditor.Api {
 
         [HttpPost("Move/{id}/{direction}")]
         public async Task<int> MoveSignItem(int id, string direction) {
+            var signItem = await signRepository.ReadAsync(rep => rep.Slides.FirstOrDefault(s => s.Id == id));
             var signId = await signRepository.ReadAsync(rep => rep.Slides.FirstOrDefault(s => s.Id == id)?.SignId);
             if (signId == null || !securityHelper.CanAccess(User, signId.Value)) {
                 return default;
             }
-            ChangedHelper.SignChanged(signRepository, null, null);
+            ChangedHelper.SignChanged(signRepository, null, null, signItem.Name);
             ChangedHelper.UpdateSignLastUpdated(signRepository, signId.Value);
             // need to reset order to ensure everything is in numerical order with no gaps
             int tempOrder = default;
@@ -82,7 +84,7 @@ namespace DigitalSignEditor.Api {
             if (sign == null || !securityHelper.CanAccess(User, sign.SignId)) {
                 return default;
             }
-            ChangedHelper.SignChanged(signRepository, null, null);
+            ChangedHelper.SignChanged(signRepository, null, null, sign.Name);
             ChangedHelper.UpdateSignLastUpdated(signRepository, sign.SignId);
             var order = sign.Order;
             var signId = sign.SignId;
@@ -97,7 +99,7 @@ namespace DigitalSignEditor.Api {
 
         [HttpPost("Update")]
         public async Task<int> UpdateSignItem([FromBody] dynamic json) {
-            var jsonObject = (dynamic) JObject.Parse(json.ToString());
+            var jsonObject = JObject.Parse(json.ToString());
             int id = int.Parse(jsonObject.id.ToString());
             var sign = await signRepository.ReadAsync(rep => rep.Slides.FirstOrDefault(s => s.Id == id));
             if (sign == null || !securityHelper.CanAccess(User, sign.SignId)) {
@@ -105,7 +107,7 @@ namespace DigitalSignEditor.Api {
             }
             var startDate = TextHelper.ConvertDate(jsonObject.startDate.ToString());
             var endDate = TextHelper.ConvertDate(jsonObject.endDate.ToString());
-            ChangedHelper.SignChanged(signRepository, startDate, endDate);
+            ChangedHelper.SignChanged(signRepository, startDate, endDate, sign.Name);
             ChangedHelper.UpdateSignLastUpdated(signRepository, sign.SignId);
             sign.LastUpdated = DateTime.Now;
             sign.Name = jsonObject.name;

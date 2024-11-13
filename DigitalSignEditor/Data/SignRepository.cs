@@ -12,9 +12,11 @@ namespace DigitalSignEditor.Data {
             this.factory = factory;
         }
 
-        public int Create<T>(T item) where T : BaseObject {
+        public int Create<T>(T item, bool updateDate = true) where T : BaseObject {
             using var context = factory.CreateDbContext();
-            item.LastUpdated = DateTime.Now;
+            if (updateDate) {
+                item.LastUpdated = DateTime.Now;
+            }
             context.Add(item);
             return context.SaveChanges();
         }
