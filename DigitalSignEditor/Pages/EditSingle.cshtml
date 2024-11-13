@@ -11,9 +11,9 @@
             <p>Last Updated: <span id="lastupdated"></span></p>
             <p>College: <span id="college"></span></p>
             <p>Description: <span id="description"></span></p>
-            <p>Twitter Feed: <span id="twitter"></span></p>
             <p>Sign Type: <span id="signtype"></span></p>
-            <p>Only use slides that are applicable for your sign type. Contact IT Partners for more information.</p>
+            <p>Only use slides that are applicable for your sign type. Contact your IT Support Desk for more information.</p>
+            <p>Note that when scheduling signs, there may be a delay of up to an hour between when the time is scheduled and when the digital sign is actually displayed. If you want a sign to show up at 8:00 AM at a particular day, consider scheduling the sign at 7:00 AM so the sign is preloaded for your event.</p>
         </div>
         <div class="column">
             <p>Minimum Height for Images: <span id="minimumheight"></span></p>
@@ -82,7 +82,6 @@
             document.getElementById('name').innerHTML = data.name;
             document.getElementById('college').innerText = data.college;
             document.getElementById('description').innerText = data.description;
-            document.getElementById('twitter').innerText = data.twitter;
             document.getElementById('signtype').innerText = data.signType;
             document.getElementById('lastupdated').innerText = data.lastUpdated;
             document.getElementById('ratio').innerText = data.ratio;

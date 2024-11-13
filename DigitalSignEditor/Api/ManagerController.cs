@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using DigitalSignEditor.ApiModels;
 using DigitalSignEditor.Data;
 using DigitalSignEditor.GithubExport;
 using DigitalSignEditor.Helpers;
@@ -26,6 +29,12 @@ namespace DigitalSignEditor.Api {
         [HttpGet("Clean")]
         public string CleanSigns() => SignManager.DeleteSlides(signRepository).ToString();
 
+        [HttpGet("GetQueue")]
+        public async Task<IEnumerable<QueueItem>> GetQueue() {
+            var changeIndicators = (await signRepository.ReadAsync(rep => rep.ChangeIndicators.OrderByDescending(ci => ci.LastUpdated).Take(30))).ToList();
+            return changeIndicators.Select(ci => new QueueItem { Name = ci.Name, IsActive = ci.IsActive, LastUpdated = ci.LastUpdated });
+        }
+
         [HttpGet("Transfer")]
         public string TransferSigns() {
             if (!ChangedHelper.HasSignChanged(signRepository)) {
@@ -36,6 +45,7 @@ namespace DigitalSignEditor.Api {
             }).Forget();
             return "";
         }
+
         [HttpGet("ForceTransfer")]
         public string TransferSignsForce() {
             Task.Run(() => {
@@ -43,6 +53,5 @@ namespace DigitalSignEditor.Api {
             }).Forget();
             return "forced transfer";
         }
-
     }
 }

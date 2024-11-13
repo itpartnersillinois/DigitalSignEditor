@@ -16,7 +16,7 @@ namespace DigitalSignEditor.Helpers {
             var slides = signRepository.Read(s => s.Slides).Where(slide => slide.EndDate < DateTime.Now && slide.IsActive).ToList();
             var returnValue = slides.Count;
             if (slides.Any()) {
-                ChangedHelper.SignChanged(signRepository, null, null);
+                ChangedHelper.SignChanged(signRepository, null, null, "");
                 foreach (var slide in slides) {
                     _ = signRepository.Delete(slide);
                 }
