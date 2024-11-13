@@ -1,0 +1,43 @@
+﻿@page
+@model DigitalSignEditor.Pages.QueueModel
+@{
+    ViewData["Title"] = "Queue List";
+}
+<h1>Scheduled Sign Queue</h1>
+
+<div class="box">
+    <ul id="list">
+
+    </ul>
+</div>
+
+@section Scripts
+{
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function (event) {
+        loadItems();
+    });
+
+    function loadItems() {
+            fetch('/Api/Manager/GetQueue', {
+            method: 'GET',
+            headers: {
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+            }
+        }).then(res => res.json()).then(data => {
+            let list = document.getElementById('list');
+            list.innerHTML = '';
+            data.forEach(element => {
+                const li = document.createElement('li');
+                li.innerHTML = `${element.isActive ? 'Scheduled for' : 'Ran at'} ${element.lastUpdated} -- ${element.name}`;
+                list.appendChild(li);
+            });
+            if (list.childNodes.length == 0) {
+                    const li = document.createElement('li');
+                    li.innerHTML = "Nothing is queued";
+                    list.appendChild(li);
+            }
+        });
+    }
+</script>
+}

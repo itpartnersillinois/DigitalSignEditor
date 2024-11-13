@@ -26,11 +26,11 @@ namespace DigitalSignEditor.Helpers {
         }
 
         public static byte[] Resize(byte[] byteArray) {
-            var image = Image.Load(byteArray, out var format);
+            var image = Image.Load(byteArray);
             var newHeight = resizedWidth * image.Height / image.Width;
             image.Mutate(x => x.Resize(resizedWidth, newHeight));
             using var ms = new MemoryStream();
-            image.Save(ms, format);
+            image.Save(ms, image.Metadata.DecodedImageFormat);
             return ms.ToArray();
         }
 
