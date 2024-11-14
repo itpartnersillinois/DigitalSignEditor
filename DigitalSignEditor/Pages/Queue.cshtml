@@ -29,7 +29,7 @@
             list.innerHTML = '';
             data.forEach(element => {
                 const li = document.createElement('li');
-                li.innerHTML = `${element.isActive ? 'Scheduled for' : 'Ran at'} ${element.lastUpdated} -- ${element.name}`;
+                    li.innerHTML = `${element.isActive ? 'Scheduled for' : 'Ran at'} ${element.lastUpdatedString} -- ${element.name}`;
                 list.appendChild(li);
             });
             if (list.childNodes.length == 0) {

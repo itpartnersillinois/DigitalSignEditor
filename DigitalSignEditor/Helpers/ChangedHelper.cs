@@ -8,12 +8,18 @@ namespace DigitalSignEditor.Helpers {
     public static class ChangedHelper {
 
         public static bool HasSignChanged(ISignRepository signRepository) {
-            var items = signRepository.Read(sr => sr.ChangeIndicators.Where(ci => ci.IsActive && ci.LastUpdated < DateTime.Now)).ToList();
+            var items = signRepository.Read(sr => sr.ChangeIndicators.Where(ci => ci.IsActive)).ToList();
+            items = items.Where(ci => ci.LastUpdated < DateTime.Now).ToList(); // for some reason, date is not being filtered correctly in SQL
             if (!items.Any()) {
                 return false;
             }
             foreach (var item in items) {
                 _ = signRepository.MakeActive(item, false);
+            }
+            var itemsDeleted = signRepository.Read(sr => sr.ChangeIndicators.Where(ci => !ci.IsActive)).ToList();
+            itemsDeleted = itemsDeleted.Where(ci => ci.LastUpdated < DateTime.Now.AddDays(-30)).ToList();
+            foreach (var item in itemsDeleted) {
+                _ = signRepository.Delete(item);
             }
             return true;
         }
