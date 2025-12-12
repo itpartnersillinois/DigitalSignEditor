@@ -35,7 +35,7 @@ To build the database, run Update-Database in Package Manager Console (see https
 ### Github Personal Access Token: 
 This application requires a fine-grain token from Github (pulled from https://github.com/settings/personal-access-tokens).
 
-If the automated publish to the digital sign is failing, chances are it's because this token has expired. To confirm this, set the DigitalSignEditor Azure App Service Environment value to ASPNETCORE_ENVIRONMENT to *Development*, then access the URL https://digitalsigneditor.itpartners.illinois.edu/api/manager/cleancommit. If the Github Personal Access Token has expired, then you should see a Connection Failed error. Chnage the ASPNETCORE_ENVIRONMENT back to *Production* and follow the steps below to regenerate the Github token. 
+If the automated publish to the digital sign is failing, chances are it's because this token has expired. To confirm this, set the DigitalSignEditor Azure App Service Environment value ASPNETCORE_ENVIRONMENT to *Development*, then access the URL https://digitalsigneditor.itpartners.illinois.edu/api/manager/cleancommit. If the Github Personal Access Token has expired, then you should see a Connection Failed error. Chnage the ASPNETCORE_ENVIRONMENT back to *Production* and follow the steps below to regenerate the Github token. 
 
 1. Go to https://github.com/settings/personal-access-tokens. Generate a new token.
 2. Change the resource owner is itpartnersillinois
